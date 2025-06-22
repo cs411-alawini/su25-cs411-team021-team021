@@ -6,10 +6,10 @@
 | ----------- | ---------------------- |
 | TeamID      |        Team-021        |
 | TeamName    |         team021         |
-| Captain     |     Anany Pravin     |
-| Captain     |  apravin2@illinois.edu  |
-| Member1     |     Khushi Patel      |
-| Member1     |   kpate506@illinois.edu  |
+| Captain     |     Khushi Patel      |
+| Captain     |  kpate506@illinois.edu  |
+| Member1     |         Anany Pravin |
+| Member1     |    apravin2@illinois.edu |
 | Member2     |     Yen-Ting Liu     |
 | Member2     |  ytliu2@illinois.edu |
 | Member3     |     Zaid M Takriti   |
