@@ -47,18 +47,18 @@ We are grounding our work in two complementary and publicly available music data
 
 #### Spotify Tracks Dataset
 **What is it?**
-A comprehensive CSV dataset sourced from Kaggle (contributed by Maharshi Pandya), containing between 100,000 and 1.2 million Spotify tracks spanning over 125 genres. This dataset supports large-scale modeling for genre classification and emotional valence prediction, which are essential for building features like playlist recommendations.
+A comprehensive CSV dataset sourced from [Kaggle (contributed by Maharshi Pandya)](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset), containing between 100,000 and 1.2 million Spotify tracks spanning over 125 genres. This dataset supports large-scale modeling for genre classification and emotional valence prediction, which are essential for building features like playlist recommendations.
 **Structure**
 Approximately 114,000 to 1.2 million rows and ~20 columns, including both numeric (e.g., valence, tempo, loudness) and categorical (e.g., genre, artist) features.
 
 #### DEAM / MediaEval Emotional Analysis Dataset
 **What is it?**
-A CSV-based Kaggle dataset developed through MediaEval, comprising ~2,058 music clips with detailed annotations of emotional valence and arousal. This dataset provides a medium-scale, validated test set ideal for training and evaluating regression-based emotion models and affective computing applications.
+A CSV-based [Kaggle dataset developed through MediaEval](https://www.kaggle.com/datasets/imsparsh/deam-mediaeval-dataset-emotional-analysis-in-music), comprising ~2,058 music clips with detailed annotations of emotional valence and arousal. This dataset provides a medium-scale, validated test set ideal for training and evaluating regression-based emotion models and affective computing applications.
 **Structure**
 Each music clip (~45 seconds) is annotated across both emotional dimensions (valence and arousal), enabling nuanced modeling beyond basic mood labels.
 
 #### Supplemental
-Should the above macro- and micro-level emotion annotations prove insufficient for the project’s goals, we have also identified a curated GitHub repository, “datasets_emotion” by juansgomez87. This collection aggregates diverse research datasets related to music emotion recognition, covering both categorical and dimensional emotion labels. Dataset sizes range from small (~200 audio clips) to medium (e.g., NTWICM) collections. These supplemental sources offer the necessary emotional ground truths for calibrating or validating models trained on large-scale audio descriptors.
+Should the above macro- and micro-level emotion annotations prove insufficient for the project’s goals, we have also identified a curated GitHub repository, [datasets_emotion](https://github.com/juansgomez87/datasets_emotion) by [juansgomez87](https://github.com/juansgomez87). This collection aggregates diverse research datasets related to music emotion recognition, covering both categorical and dimensional emotion labels. Dataset sizes range from small (~200 audio clips) to medium (e.g., NTWICM) collections. These supplemental sources offer the necessary emotional ground truths for calibrating or validating models trained on large-scale audio descriptors.
 
 ## Functionality
 As mentioned, MeloMood generates playlists for users based on their current mood. Upon logging in, the user can select a mood from a preset list (such as “anxious”, “excited”, or “relaxed”), or typing in a custom emotion. The system will then use this input along with user preferences in their music taste (e.g. favorite genres, artists) to generate a playlist through a music streaming API like Spotify. Users will be able to listen to this playlist and tag individual songs/segments of a song with specific emotions which helps build a crowdsourced emotion-to-music dataset for better playlist recommendations. They are also able to rate these songs, informing on whether the recommendation was good or not.
