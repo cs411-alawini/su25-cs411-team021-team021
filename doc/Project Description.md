@@ -72,7 +72,7 @@ Each playlist generated is saved to the user’s profile and stored in a mood hi
 These features make MeloMood more than just a simple music generator. It is a tool that allows users to express how they feel and connect through music.
 
 Below is a low-fidelity UI mockup for MeloMood:
-[]
+![Low-fidelity UI mockup](figures/website-mockup.png)
 
 The website includes four main pages:
 1. Main Page: Users will choose or enter their current mood and generate a playlist based on that
@@ -80,3 +80,7 @@ The website includes four main pages:
 3. Community (ComHub): Users can browse and filter playlists shared by others, and interact with them. They can also check through emotion tags.
 4. Mood History Dashboard: Timeline chart / Pie Chart that tracks the user’s mood and playlist activity over time, as well as past generated playlists.
 The UI should be as user friendly as possible, hence focusing on simplicity with basic functions.
+
+## Team Functions
+
+## Conclusion
