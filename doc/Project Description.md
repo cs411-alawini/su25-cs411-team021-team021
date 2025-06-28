@@ -75,12 +75,21 @@ Below is a low-fidelity UI mockup for MeloMood:
 ![Low-fidelity UI mockup](figures/website-mockup.png)
 
 The website includes four main pages:
-1. Main Page: Users will choose or enter their current mood and generate a playlist based on that
-2. Playlist: A mood based playlist generated from mood input, tagging individual songs with emotional labels
-3. Community (ComHub): Users can browse and filter playlists shared by others, and interact with them. They can also check through emotion tags.
-4. Mood History Dashboard: Timeline chart / Pie Chart that tracks the user’s mood and playlist activity over time, as well as past generated playlists.
+1. **Main Page:** Users will choose or enter their current mood and generate a playlist based on that
+2. **Playlist:** A mood based playlist generated from mood input, tagging individual songs with emotional labels
+3. **Community (ComHub):** Users can browse and filter playlists shared by others, and interact with them. They can also check through emotion tags.
+4. **Mood History Dashboard:** Timeline/Pie chart that tracks the user’s mood and playlist activity over time, as well as past generated playlists.
 The UI should be as user friendly as possible, hence focusing on simplicity with basic functions.
 
-## Team Functions
+## Task Breakdown
+The work for MeloMood will be divided equally among the three team members, based on each person’s strengths. While tasks are initially assigned to specific members, everyone is encouraged to assist or swap roles as needed. All coordination will be clearly communicated throughout the project.
 
-## Conclusion
+In addition to their individual responsibilities, all members will contribute to writing documentation, reviewing the software, refining UI styling, and testing to ensure that the application functions as intended.
+
+#### Individual Responsibilities:
+
+- **Khushi:** Will design the user profile page and mood history dashboard, including mood logs and playlist storage—ensuring saved playlists are accessible to the user.
+
+- **Anany:** Will develop the community hub and interaction features, as well as the search/filter functionality and the crowdsourced emotion tagging system.
+
+- **Andy:** Responsible for designing the mood input system and playlist generation logic. This includes integrating the Spotify API and ensuring mood data is correctly stored in the database.
