@@ -12,8 +12,6 @@
 | Member1     |    apravin2@illinois.edu |
 | Member2     |     Yen-Ting Liu     |
 | Member2     |  ytliu2@illinois.edu |
-| Member3     |     Zaid M Takriti   |
-| Member3     |  ztakri2@illinois.edu          |
 
 ## Project Information
 
