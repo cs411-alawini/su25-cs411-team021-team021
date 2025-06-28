@@ -48,12 +48,14 @@ We are grounding our work in two complementary and publicly available music data
 #### Spotify Tracks Dataset
 **What is it?**
 A comprehensive CSV dataset sourced from [Kaggle (contributed by Maharshi Pandya)](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset), containing between 100,000 and 1.2 million Spotify tracks spanning over 125 genres. This dataset supports large-scale modeling for genre classification and emotional valence prediction, which are essential for building features like playlist recommendations.
+
 **Structure**
 Approximately 114,000 to 1.2 million rows and ~20 columns, including both numeric (e.g., valence, tempo, loudness) and categorical (e.g., genre, artist) features.
 
 #### DEAM / MediaEval Emotional Analysis Dataset
 **What is it?**
 A CSV-based [Kaggle dataset developed through MediaEval](https://www.kaggle.com/datasets/imsparsh/deam-mediaeval-dataset-emotional-analysis-in-music), comprising ~2,058 music clips with detailed annotations of emotional valence and arousal. This dataset provides a medium-scale, validated test set ideal for training and evaluating regression-based emotion models and affective computing applications.
+
 **Structure**
 Each music clip (~45 seconds) is annotated across both emotional dimensions (valence and arousal), enabling nuanced modeling beyond basic mood labels.
 
@@ -89,7 +91,5 @@ In addition to their individual responsibilities, all members will contribute to
 #### Individual Responsibilities:
 
 - **Khushi:** Will design the user profile page and mood history dashboard, including mood logs and playlist storage—ensuring saved playlists are accessible to the user.
-
 - **Anany:** Will develop the community hub and interaction features, as well as the search/filter functionality and the crowdsourced emotion tagging system.
-
 - **Andy:** Responsible for designing the mood input system and playlist generation logic. This includes integrating the Spotify API and ensuring mood data is correctly stored in the database.
