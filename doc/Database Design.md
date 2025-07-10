@@ -2,6 +2,75 @@
 
 ## Diagram Overview
 
+```mermaid
+erDiagram
+    User {
+        INT UserId PK
+        VARCHAR Username
+        VARCHAR PasswordHash
+        VARCHAR Email
+        TEXT ProfileSettings
+    }
+    MoodLog {
+        INT MoodLogId PK
+        INT UserId FK
+        DATETIME Timestamp
+        VARCHAR MoodLabel
+        TEXT Notes
+    }
+    Playlist {
+        INT PlaylistId PK
+        INT UserId FK
+        INT MoodLogId FK
+        DATETIME CreatedAt
+        VARCHAR Title
+        TEXT Description
+    }
+    Song {
+        INT SongId PK
+        VARCHAR Title
+        VARCHAR Artist
+        VARCHAR Genre
+        DECIMAL Valence
+        INT Duration
+        VARCHAR Album
+        INT ReleaseYear
+    }
+    PlaylistSong {
+        INT PlaylistId PK
+        INT SongId FK
+        INT Position FK
+    }
+    Tag {
+        INT TagId PK
+        VARCHAR Name
+        TEXT Description
+    }
+    SongTag {
+        INT SongId PK
+        INT TagId FK
+    }
+    CommunityPost {
+        INT PostId PK
+        INT UserId FK
+        INT PlaylistId FK
+        TEXT Content
+        DATETIME PostedAt
+        VARCHAR Title
+    }
+
+    %% Relationships
+    User ||--o{ MoodLog : "has"
+    User ||--o{ Playlist : "creates"
+    MoodLog ||--|| Playlist : "creates"
+    Playlist ||--o{ PlaylistSong : "contains"
+    Song ||--o{ PlaylistSong : "in"
+    Song ||--o{ SongTag : "tagged with"
+    Tag ||--o{ SongTag : "applies to"
+    User ||--o{ CommunityPost : "writes"
+    Playlist ||--o{ CommunityPost : "shared in"
+```
+
 The ERD represents the [MeloMood](Project Description) music recommendation system centered around its users and their moods. Each **User**:
 
 * Has an account with preferences.
