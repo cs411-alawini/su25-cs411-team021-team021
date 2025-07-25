@@ -1,15 +1,22 @@
-/* Top Happy tracks last 30 days */
-SELECT s.track_name, s.artist,
-       ROUND(AVG(m.rating),1) AS avg_happy_rating,
-       COUNT(*)               AS votes
-FROM   Song s
-JOIN   MoodLog m ON m.song_id = s.song_id
-WHERE  m.mood_label = 'Happy'
-  AND  m.ts >= NOW() - INTERVAL 30 DAY
-GROUP  BY s.song_id
-HAVING votes >= 10
-ORDER  BY avg_happy_rating DESC
-LIMIT 15;
+/* Top happy tracks last 30 days */
+SELECT
+    s.track_name, s.artist,
+    ROUND(AVG(m.rating),1) AS avg_happy_rating,
+    COUNT(*) AS votes
+FROM
+    Song s
+    JOIN MoodLog m ON m.song_id = s.song_id
+WHERE
+    m.mood_label = 'Happy'
+    AND m.ts >= NOW() - INTERVAL 30 DAY
+GROUP BY
+    s.song_id
+HAVING
+    votes >= 2
+ORDER BY
+    avg_happy_rating DESC
+LIMIT
+    15;
 
 SELECT u.username,
        COUNT(*) AS total_logs,
