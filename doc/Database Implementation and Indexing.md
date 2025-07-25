@@ -1,4 +1,4 @@
-# Queries
+# Database Implementation and Indexing
 
 ## Part 1
 
