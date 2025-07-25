@@ -71,7 +71,7 @@ erDiagram
     Playlist ||--o{ CommunityPost : "shared in"
 ```
 
-The ERD represents the [MeloMood](Project Description) music recommendation system centered around its users and their moods. Each **User**:
+The ERD represents the [MeloMood](Project%20Description.md) music recommendation system centered around its users and their moods. Each **User**:
 
 * Has an account with preferences.
 * Logs their moods over time through **MoodLogs** (timestamped entries labeled with a mood).
