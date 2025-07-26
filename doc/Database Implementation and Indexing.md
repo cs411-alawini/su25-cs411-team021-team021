@@ -176,6 +176,20 @@ LIMIT
 ### 2) Explore tradeoffs of adding different indices
 
 #### Top happy tracks in last 30 days
+
+* mood_label
+  ```sql
+  CREATE INDEX idx_ml_moodlabel ON MoodLog(mood_label);
+  ```
+* (mood_label, ts)
+  ```sql
+  CREATE INDEX idx_ml_mood_ts ON MoodLog(mood_label, ts);
+  ```
+* (mood_label, ts, song_id)
+  ```sql
+  CREATE INDEX idx_ml_mood_ts_songid ON MoodLog(mood_label, ts, song_id);
+  ```
+
 | Step                                | Default Cost | MoodLabel Cost | (mood_label, ts) Cost | (mood_label, ts, song_id) Cost |
 |--------------------------------------|--------------|---------------|-----------------------|-------------------------------|
 | Table scan on MoodLog (m)           | 437          | —             | —                     | —                             |

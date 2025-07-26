@@ -17,7 +17,18 @@ ORDER BY
     avg_happy_rating DESC;
 
 /*
+[Default]
 -> Sort: avg_happy_rating DESC (actual time=5.53..5.54 rows=40 loops=1) -> Filter: (votes >= 2) (actual time=5.46..5.47 rows=40 loops=1) -> Table scan on <temporary> (actual time=5.46..5.46 rows=40 loops=1) -> Aggregate using temporary table (actual time=5.45..5.45 rows=40 loops=1) -> Nested loop inner join (cost=554 rows=333) (actual time=0.555..4.9 rows=340 loops=1) -> Filter: ((m.mood_label = 'Happy') and (m.ts >= <cache>((now() - interval 30 day))) and (m.song_id is not null)) (cost=437 rows=333) (actual time=0.317..3.72 rows=340 loops=1) -> Table scan on m (cost=437 rows=5000) (actual time=0.292..2.63 rows=5000 loops=1) -> Single-row index lookup on s using PRIMARY (song_id=m.song_id) (cost=0.25 rows=1) (actual time=0.0031..0.00313 rows=1 loops=340)
+
+[Single-Column Index on MoodLog(mood_label)]
+-> Sort: avg_happy_rating DESC (actual time=3.09..3.09 rows=40 loops=1) -> Filter: (votes >= 2) (actual time=3.03..3.04 rows=40 loops=1) -> Table scan on <temporary> (actual time=3.03..3.03 rows=40 loops=1) -> Aggregate using temporary table (actual time=3.03..3.03 rows=40 loops=1) -> Nested loop inner join (cost=163 rows=335) (actual time=0.417..2.62 rows=340 loops=1) -> Filter: ((m.ts >= <cache>((now() - interval 30 day))) and (m.song_id is not null)) (cost=45.5 rows=335) (actual time=0.402..1.99 rows=340 loops=1) -> Index lookup on m using idx_ml_moodlabel (mood_label='Happy'), with index condition: (m.mood_label = 'Happy') (cost=45.5 rows=1006) (actual time=0.391..1.87 rows=1006 loops=1) -> Single-row index lookup on s using PRIMARY (song_id=m.song_id) (cost=0.25 rows=1) (actual time=0.00163..0.00166 rows=1 loops=340)
+
+[Composite Index on (mood_label, ts)]
+-> Sort: avg_happy_rating DESC (actual time=2.04..2.04 rows=40 loops=1) -> Filter: (votes >= 2) (actual time=1.98..1.99 rows=40 loops=1) -> Table scan on <temporary> (actual time=1.98..1.98 rows=40 loops=1) -> Aggregate using temporary table (actual time=1.98..1.98 rows=40 loops=1) -> Nested loop inner join (cost=272 rows=340) (actual time=0.467..1.57 rows=340 loops=1) -> Filter: (m.song_id is not null) (cost=153 rows=340) (actual time=0.452..0.918 rows=340 loops=1) -> Index range scan on m using idx_ml_mood_ts over (mood_label = 'Happy' AND '2025-06-26 00:42:09' <= ts), with index condition: ((m.mood_label = 'Happy') and (m.ts >= <cache>((now() - interval 30 day)))) (cost=153 rows=340) (actual time=0.44..0.88 rows=340 loops=1) -> Single-row index lookup on s using PRIMARY (song_id=m.song_id) (cost=0.25 rows=1) (actual time=0.00167..0.0017 rows=1 loops=340)
+
+[Composite Index on (mood_label, ts, song_id)
+]
+-> Sort: avg_happy_rating DESC (actual time=1.83..1.83 rows=40 loops=1) -> Filter: (votes >= 2) (actual time=1.77..1.78 rows=40 loops=1) -> Table scan on <temporary> (actual time=1.76..1.77 rows=40 loops=1) -> Aggregate using temporary table (actual time=1.76..1.76 rows=40 loops=1) -> Nested loop inner join (cost=272 rows=340) (actual time=0.437..1.42 rows=340 loops=1) -> Index range scan on m using idx_ml_mood_ts_songid over (mood_label = 'Happy' AND '2025-06-26 00:42:35' <= ts), with index condition: (((m.mood_label = 'Happy') and (m.ts >= <cache>((now() - interval 30 day)))) and (m.song_id is not null)) (cost=153 rows=340) (actual time=0.423..0.89 rows=340 loops=1) -> Single-row index lookup on s using PRIMARY (song_id=m.song_id) (cost=0.25 rows=1) (actual time=0.00133..0.00135 rows=1 loops=340)
 */
 
 -- selects the users who have logged >= 3 moods with average ratings >= 80
@@ -38,7 +49,17 @@ ORDER BY
     total_logs DESC;
 
 /*
+[Default]
 -> Sort: total_logs DESC (actual time=19.3..19.3 rows=246 loops=1) -> Filter: ((distinct_moods >= 3) and (avg_rating >= 80)) (actual time=0.623..19.1 rows=246 loops=1) -> Stream results (cost=1369 rows=1000) (actual time=0.602..18.7 rows=617 loops=1) -> Group aggregate: avg(m.rating), count(0), count(distinct m.mood_label) (cost=1369 rows=1000) (actual time=0.57..17.9 rows=617 loops=1) -> Nested loop inner join (cost=1087 rows=2817) (actual time=0.362..15 rows=5000 loops=1) -> Index scan on u using PRIMARY (cost=101 rows=1000) (actual time=0.0867..0.416 rows=1000 loops=1) -> Index lookup on m using idx_moodlog_user_ts (user_id=u.user_id) (cost=0.705 rows=2.82) (actual time=0.00694..0.0141 rows=5 loops=1000)
+
+[Single-Column Index on MoodLog(user_id)]
+-> Sort: total_logs DESC (actual time=15.4..15.4 rows=246 loops=1) -> Filter: ((distinct_moods >= 3) and (avg_rating >= 80)) (actual time=12.5..15.3 rows=246 loops=1) -> Stream results (actual time=12.4..15.2 rows=617 loops=1) -> Group aggregate: avg(MoodLog.rating), count(0), count(distinct MoodLog.mood_label) (actual time=12.4..14.8 rows=617 loops=1) -> Sort: u.user_id (actual time=12.4..12.8 rows=5000 loops=1) -> Stream results (cost=2254 rows=5000) (actual time=0.162..10.2 rows=5000 loops=1) -> Nested loop inner join (cost=2254 rows=5000) (actual time=0.156..7.53 rows=5000 loops=1) -> Filter: (m.user_id is not null) (cost=504 rows=5000) (actual time=0.139..1.95 rows=5000 loops=1) -> Table scan on m (cost=504 rows=5000) (actual time=0.137..1.58 rows=5000 loops=1) -> Single-row index lookup on u using PRIMARY (user_id=m.user_id) (cost=0.25 rows=1) (actual time=913e-6..945e-6 rows=1 loops=5000)
+
+[Composite Index on MoodLog(user_id, mood_label)]
+-> Sort: total_logs DESC (actual time=15.7..15.8 rows=246 loops=1) -> Filter: ((distinct_moods >= 3) and (avg_rating >= 80)) (actual time=12.9..15.7 rows=246 loops=1) -> Stream results (actual time=12.9..15.5 rows=617 loops=1) -> Group aggregate: avg(MoodLog.rating), count(0), count(distinct MoodLog.mood_label) (actual time=12.9..15.2 rows=617 loops=1) -> Sort: u.user_id (actual time=12.9..13.3 rows=5000 loops=1) -> Stream results (cost=2254 rows=5000) (actual time=0.269..11.1 rows=5000 loops=1) -> Nested loop inner join (cost=2254 rows=5000) (actual time=0.263..8.21 rows=5000 loops=1) -> Filter: (m.user_id is not null) (cost=504 rows=5000) (actual time=0.244..2.23 rows=5000 loops=1) -> Table scan on m (cost=504 rows=5000) (actual time=0.243..1.85 rows=5000 loops=1) -> Single-row index lookup on u using PRIMARY (user_id=m.user_id) (cost=0.25 rows=1) (actual time=988e-6..0.00102 rows=1 loops=5000)
+
+[Composite Index on MoodLog(user_id, mood_label, rating)]
+-> Sort: total_logs DESC (actual time=7.23..7.24 rows=246 loops=1) -> Filter: ((distinct_moods >= 3) and (avg_rating >= 80)) (actual time=0.123..7.12 rows=246 loops=1) -> Stream results (cost=2627 rows=1000) (actual time=0.119..6.96 rows=617 loops=1) -> Group aggregate: avg(m.rating), count(0), count(distinct m.mood_label) (cost=2627 rows=1000) (actual time=0.114..6.57 rows=617 loops=1) -> Nested loop inner join (cost=1817 rows=8104) (actual time=0.0915..4.38 rows=5000 loops=1) -> Index scan on u using PRIMARY (cost=101 rows=1000) (actual time=0.0581..0.314 rows=1000 loops=1) -> Covering index lookup on m using idx_ml_userid_moodlabel_rating (user_id=u.user_id) (cost=0.906 rows=8.1) (actual time=0.00268..0.00364 rows=5 loops=1000)
 */
 
 -- compares valence to the average happy rating given by users the MoodLog
