@@ -177,15 +177,15 @@ LIMIT
 
 #### Top happy tracks in last 30 days
 
-* mood_label
+* **mood_label**
   ```sql
   CREATE INDEX idx_ml_moodlabel ON MoodLog(mood_label);
   ```
-* (mood_label, ts)
+* **(mood_label, ts)**
   ```sql
   CREATE INDEX idx_ml_mood_ts ON MoodLog(mood_label, ts);
   ```
-* (mood_label, ts, song_id)
+* **(mood_label, ts, song_id)**
   ```sql
   CREATE INDEX idx_ml_mood_ts_songid ON MoodLog(mood_label, ts, song_id);
   ```
@@ -202,6 +202,20 @@ LIMIT
 | Sort final result                    | 40           | 40            | 40                    | 40                            |
 
 #### Find active users
+
+* **user_id**
+  ```sql
+  CREATE INDEX idx_ml_userid ON MoodLog(user_id);
+  ```
+* **(user_id, mood_label)**
+  ```sql
+  CREATE INDEX idx_ml_userid_moodlabel ON MoodLog(user_id, mood_label);
+  ```
+* **(user_id, mood_label, rating)**
+  ```sql
+  CREATE INDEX idx_ml_userid_moodlabel_rating ON MoodLog(user_id, mood_label, rating);
+  ```
+
 | Step                                  | Default Cost      | user_id Cost | (user_id, mood_label) Cost | (user_id, mood_label, rating) Cost |
 |----------------------------------------------|--------------|--------------|---------------------|----------------------------|
 | Stream results                           | 1369         | 2254         | 2254                | 2627                       |
