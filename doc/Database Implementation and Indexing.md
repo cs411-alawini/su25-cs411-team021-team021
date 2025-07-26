@@ -15,7 +15,7 @@ It should satisfy the 1000-row requirement.
 ### 4) Advanced SQL queries
 All following advanced SQL queries are provided with a screenshot of the top 15 rows of each query result, unless specified explicitly.
 
-#### Top happy tracks last 30 days
+#### Top happy tracks in last 30 days
 ```sql
 SELECT
     s.track_name, s.artist,
@@ -39,7 +39,7 @@ LIMIT
 
 ![Top 15 results](figures/advance1_top15.png)
 
-#### Select active users
+#### Find active users
 Selects the users who have logged >= 3 moods with average ratings >= 80.
 
 ```sql
@@ -64,7 +64,7 @@ LIMIT
 
 ![Top 15 results](figures/advance2_top15.png)
 
-#### Valence difference
+#### Valence differences
 ```sql
 WITH crowd AS (
     SELECT
@@ -96,7 +96,7 @@ LIMIT
 
 ![Top 15 results](figures/advance3_top15.png)
 
-#### Finding playlists with diversed mood
+#### Find playlists with diversed mood
 Finds the top 15 playlists by mood diversity and size, and shows moods represented and total number of logs considered for analysis.
 
 ```sql
@@ -123,7 +123,55 @@ LIMIT
 ![Top 15 results](figures/advance4_top15.png)
 
 ## Part 2
+
 ### 1) `EXPLAIN ANALYZE`
+
+#### Top happy tracks in last 30 days
+| Step                                   | Input Rows | Output Rows | Cost   | Purpose/Operation                        |
+|-----------------------------------------|------------|-------------|--------|------------------------------------------|
+| Table scan on MoodLog (m)               | 5,000      | 5,000       | 437    | Reads every MoodLog row                  |
+| Filter: mood_label='Happy' and recent   | 5,000      | 340         | 437    | Keeps only 'Happy' in last 30 days       |
+| PK join: Song using song_id             | 340        | 340         | 0.25   | Gets song data for each filtered log     |
+| Group/Aggregate by song_id              | 340        | 40          | —      | Aggregates ratings/counts per song       |
+| Filter: votes >= 2                      | 40         | 40          | —      | Keeps only songs with at least 2 votes   |
+| Sort: avg_happy_rating DESC             | 40         | 40          | —      | Sorts songs by average happy rating desc |
+
+#### Find active users
+| Step                                        | Input Rows | Output Rows | Cost   | Purpose/Operation                                        |
+|----------------------------------------------|------------|-------------|--------|----------------------------------------------------------|
+| Index scan on User (u) using PRIMARY         | 1,000      | 1,000       | 101    | Reads all User rows                                      |
+| Index lookup on MoodLog (m) using idx_moodlog_user_ts (user_id=u.user_id) | 1,000 | 5,000 | 0.705  | Finds MoodLogs for each user                             |
+| Nested loop inner join                       | 1,000      | 5,000       | 1087   | Joins each User to their MoodLogs                        |
+| Group aggregate: avg(m.rating), count(*), count(distinct m.mood_label) | 5,000 | 617 | 1369   | Groups MoodLogs by user, computes aggregates              |
+| Stream results                               | 617        | 617         | 1369   | Streams grouped results                                  |
+| Filter: (distinct_moods >= 3 AND avg_rating >= 80) | 617  | 246     | —      | Keeps users with at least 3 moods and avg_rating >= 80   |
+| Sort: total_logs DESC                        | 246        | 246         | —      | Sorts final users by total_logs (descending)             |
+
+#### Valence differences
+| Step                                                | Input Rows | Output Rows | Cost   | Purpose/Operation                                                    |
+|-----------------------------------------------------|------------|-------------|--------|---------------------------------------------------------------------|
+| Index scan on MoodLog using idx_moodlog_song_mood   | 5,000      | 5,000       | 504    | Reads all MoodLog rows using index                                  |
+| Group aggregate: avg(CASE WHEN mood_label='Happy')  | 5,000      | 40          | 1004   | Aggregates to compute crowd_valence per song                        |
+| Filter: avg(CASE ...) IS NOT NULL                   | 40         | 40          | 1004   | Keeps only songs with non-null average crowd_valence                |
+| Materialize CTE crowd                               | 40         | 40          | 1423   | Stores CTE results (crowd) in memory                                |
+| Table scan on c                                     | 40         | 40          | 1423   | Reads all rows from CTE                                             |
+| Filter: (c.song_id IS NOT NULL)                     | 40         | 40          | 1423   | Ensures valid song_id in CTE                                        |
+| Nested loop inner join (Song JOIN crowd)            | 40         | 40          | 2315   | Joins Song to crowd using song_id                                   |
+| Stream results                                      | 40         | 40          | 2315   | Streams the joined results                                          |
+| Filter: diff > 0.30                                 | 40         | 21          | —      | Keeps only rows where |valence - crowd_valence| > 0.30             |
+| Sort: diff DESC                                     | 21         | 21          | —      | Sorts final songs by difference descending                          |
+
+#### Find playlists with diversed mood
+| Step                                                | Input Rows | Output Rows | Cost    | Purpose/Operation                                                   |
+|-----------------------------------------------------|------------|-------------|---------|---------------------------------------------------------------------|
+| Index scan on Playlist (p) using PRIMARY            | 764        | 764         | 77.4    | Reads all Playlists                                                 |
+| Single-row index lookup on User (u) using PRIMARY   | 764        | 764         | 0.25    | Finds User for each Playlist                                        |
+| Covering index lookup on PlaylistSong (ps) using PK | 764        | 30,560      | 0.274   | Gets all songs for each Playlist                                    |
+| Covering index lookup on MoodLog (m) using idx_moodlog_song_mood | 30,560   | 3,820,000   | 0.25    | Finds MoodLogs for each song in PlaylistSong                        |
+| Nested loop inner join (x3, see above)              | Various    | 3,820,000   | 14,830  | Joins Playlists, Users, Songs, and MoodLogs                         |
+| Group aggregate: count(distinct m.mood_label), count(*) | 3,820,000 | 764     | 18,458  | Aggregates mood diversity and total tracks per Playlist              |
+| Stream results                                      | 764        | 764         | 18,458  | Streams grouped Playlist results                                    |
+| Sort: mood_diversity DESC, total_tracks DESC        | 764        | 764         | —       | Sorts Playlists by mood diversity and track count descending        |
 
 ### 2) Explore tradeoffs of adding different indices
 
