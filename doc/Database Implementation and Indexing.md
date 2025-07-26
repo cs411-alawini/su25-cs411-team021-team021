@@ -226,6 +226,28 @@ LIMIT
 
 #### Valence differences
 
+* **song_id**
+  ```sql
+  CREATE INDEX idx_ml_songid ON MoodLog(song_id);
+  ```
+* **(song_id, mood_label)**
+  ```sql
+  CREATE INDEX idx_ml_songid_moodlabel ON MoodLog(song_id, mood_label);
+  ```
+* **(song_id, mood_label, rating)**
+  ```sql
+  CREATE INDEX idx_ml_songid_moodlabel_rating ON MoodLog(song_id, mood_label, rating);
+  ```
+
+| Step                                    | Default | song_id Only Cost | (song_id, mood_label) Cost | (song_id, mood_label, rating) Cost |
+|-------------------------------------------------|---------|--------------|---------------------|----------------------------|
+| Stream results cost                             | 2315    | 2315         | 2315                | 2315                       |
+| Nested loop inner join cost                     | 2315    | 2315         | 2315                | 2315                       |
+| Filter (c.song_id is not null) / Table scan on c| 1423    | 1008         | 1008                | 1008                       |
+| Materialize CTE crowd                           | 1423    | 1008         | 1008                | 1008                       |
+| Filter/Group aggregate (within crowd CTE)       | 1004    | 1004         | 1004                | 1004                       |
+| Index scan/covering index scan on MoodLog       | 504     | 504          | 504                 | 504                        |
+
 #### Find playlists with diversed mood
 
 ### 3) Final index design
