@@ -169,8 +169,8 @@ LIMIT
 | Covering index lookup on PlaylistSong (ps) using PK | 764        | 30,560      | 0.274   | Gets all songs for each Playlist                                    |
 | Covering index lookup on MoodLog (m) using idx_moodlog_song_mood | 30,560   | 3,820,000   | 0.25    | Finds MoodLogs for each song in PlaylistSong                        |
 | Nested loop inner join (x3, see above)              | Various    | 3,820,000   | 14,830  | Joins Playlists, Users, Songs, and MoodLogs                         |
-| Group aggregate: count(distinct m.mood_label), count(*) | 3,820,000 | 764     | 18,458  | Aggregates mood diversity and total tracks per Playlist              |
-| Stream results                                      | 764        | 764         | 18,458  | Streams grouped Playlist results                                    |
+| Group aggregate: count(distinct m.mood_label), count(*) | 3,820,000 | 764     | 18458  | Aggregates mood diversity and total tracks per Playlist              |
+| Stream results                                      | 764        | 764         | 18458  | Streams grouped Playlist results                                    |
 | Sort: mood_diversity DESC, total_tracks DESC        | 764        | 764         | —       | Sorts Playlists by mood diversity and track count descending        |
 
 ### 2) Explore tradeoffs of adding different indices
