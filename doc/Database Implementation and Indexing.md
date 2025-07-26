@@ -188,12 +188,13 @@ LIMIT
 | Sort final result                    | 40           | 40            | 40                    | 40                            |
 
 #### Find active users
-| Index Tested                       | Stream Results Cost | Nested Loop Join Cost | Index Lookup/Scan on MoodLog Cost | Group Aggregate Cost |
-|-------------------------------------|--------------------|----------------------|-----------------------------------|---------------------|
-| Default (idx_ml_user_ts)            | 1369               | 1087                 | 0.705                             | 1369                |
-| user_id Only                        | 2254               | 2254                 | 504                               | —                   |
-| user_id, mood_label                 | 2254               | 2254                 | 504                               | —                   |
-| user_id, mood_label, rating         | 2627               | 1817                 | 0.906 (covering index)            | 2627                |
+| Step                                  | Default Cost      | user_id Cost | (user_id, mood_label) Cost | (user_id, mood_label, rating) Cost |
+|----------------------------------------------|--------------|--------------|---------------------|----------------------------|
+| Stream results                           | 1369         | 2254         | 2254                | 2627                       |
+| Nested loop join                         | 1087         | 2254         | 2254                | 1817                       |
+| Index lookup/scan on MoodLog             | 0.705        | 504          | 504                 | 0.906 (covering)           |
+| Group aggregate                          | 1369         | —            | —                   | 2627                       |
+
 
 #### Valence differences
 
