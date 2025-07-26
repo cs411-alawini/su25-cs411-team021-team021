@@ -141,9 +141,9 @@ LIMIT
 |----------------------------------------------|------------|-------------|--------|----------------------------------------------------------|
 | Index scan on User (u) using PRIMARY         | 1,000      | 1,000       | 101    | Reads all User rows                                      |
 | Index lookup on MoodLog (m) using idx_moodlog_user_ts (user_id=u.user_id) | 1,000 | 5,000 | 0.705  | Finds MoodLogs for each user                             |
-| Nested loop inner join                       | 1,000      | 5,000       | 1087   | Joins each User to their MoodLogs                        |
-| Group aggregate: avg(m.rating), count(*), count(distinct m.mood_label) | 5,000 | 617 | 1369   | Groups MoodLogs by user, computes aggregates              |
-| Stream results                               | 617        | 617         | 1369   | Streams grouped results                                  |
+| Nested loop inner join                       | 1,000      | 5,000       | 1,087   | Joins each User to their MoodLogs                        |
+| Group aggregate: avg(m.rating), count(*), count(distinct m.mood_label) | 5,000 | 617 | 1,369   | Groups MoodLogs by user, computes aggregates              |
+| Stream results                               | 617        | 617         | 1,369   | Streams grouped results                                  |
 | Filter: (distinct_moods >= 3 AND avg_rating >= 80) | 617  | 246     | —      | Keeps users with at least 3 moods and avg_rating >= 80   |
 | Sort: total_logs DESC                        | 246        | 246         | —      | Sorts final users by total_logs (descending)             |
 
@@ -151,13 +151,13 @@ LIMIT
 | Step                                                | Input Rows | Output Rows | Cost   | Purpose/Operation                                                    |
 |-----------------------------------------------------|------------|-------------|--------|---------------------------------------------------------------------|
 | Index scan on MoodLog using idx_moodlog_song_mood   | 5,000      | 5,000       | 504    | Reads all MoodLog rows using index                                  |
-| Group aggregate: avg(CASE WHEN mood_label='Happy')  | 5,000      | 40          | 1004   | Aggregates to compute crowd_valence per song                        |
-| Filter: avg(CASE ...) IS NOT NULL                   | 40         | 40          | 1004   | Keeps only songs with non-null average crowd_valence                |
-| Materialize CTE crowd                               | 40         | 40          | 1423   | Stores CTE results (crowd) in memory                                |
-| Table scan on c                                     | 40         | 40          | 1423   | Reads all rows from CTE                                             |
-| Filter: (c.song_id IS NOT NULL)                     | 40         | 40          | 1423   | Ensures valid song_id in CTE                                        |
-| Nested loop inner join (Song JOIN crowd)            | 40         | 40          | 2315   | Joins Song to crowd using song_id                                   |
-| Stream results                                      | 40         | 40          | 2315   | Streams the joined results                                          |
+| Group aggregate: avg(CASE WHEN mood_label='Happy')  | 5,000      | 40          | 1,004   | Aggregates to compute crowd_valence per song                        |
+| Filter: avg(CASE ...) IS NOT NULL                   | 40         | 40          | 1,004   | Keeps only songs with non-null average crowd_valence                |
+| Materialize CTE crowd                               | 40         | 40          | 1,423   | Stores CTE results (crowd) in memory                                |
+| Table scan on c                                     | 40         | 40          | 1,423   | Reads all rows from CTE                                             |
+| Filter: (c.song_id IS NOT NULL)                     | 40         | 40          | 1,423   | Ensures valid song_id in CTE                                        |
+| Nested loop inner join (Song JOIN crowd)            | 40         | 40          | 2,315   | Joins Song to crowd using song_id                                   |
+| Stream results                                      | 40         | 40          | 2,315   | Streams the joined results                                          |
 | Filter: diff > 0.30                                 | 40         | 21          | —      | Keeps only rows where |valence - crowd_valence| > 0.30             |
 | Sort: diff DESC                                     | 21         | 21          | —      | Sorts final songs by difference descending                          |
 
@@ -169,8 +169,8 @@ LIMIT
 | Covering index lookup on PlaylistSong (ps) using PK | 764        | 30,560      | 0.274   | Gets all songs for each Playlist                                    |
 | Covering index lookup on MoodLog (m) using idx_moodlog_song_mood | 30,560   | 3,820,000   | 0.25    | Finds MoodLogs for each song in PlaylistSong                        |
 | Nested loop inner join (x3, see above)              | Various    | 3,820,000   | 14,830  | Joins Playlists, Users, Songs, and MoodLogs                         |
-| Group aggregate: count(distinct m.mood_label), count(*) | 3,820,000 | 764     | 18458  | Aggregates mood diversity and total tracks per Playlist              |
-| Stream results                                      | 764        | 764         | 18458  | Streams grouped Playlist results                                    |
+| Group aggregate: count(distinct m.mood_label), count(*) | 3,820,000 | 764     | 18,458  | Aggregates mood diversity and total tracks per Playlist              |
+| Stream results                                      | 764        | 764         | 18,458  | Streams grouped Playlist results                                    |
 | Sort: mood_diversity DESC, total_tracks DESC        | 764        | 764         | —       | Sorts Playlists by mood diversity and track count descending        |
 
 ### 2) Explore tradeoffs of adding different indices
@@ -218,10 +218,10 @@ LIMIT
 
 | Step                                  | Default Cost      | user_id Cost | (user_id, mood_label) Cost | (user_id, mood_label, rating) Cost |
 |----------------------------------------------|--------------|--------------|---------------------|----------------------------|
-| Stream results                           | 1369         | 2254         | 2254                | 2627                       |
-| Nested loop join                         | 1087         | 2254         | 2254                | 1817                       |
+| Stream results                           | 1,369         | 2,254         | 2,254                | 2,627                       |
+| Nested loop join                         | 1,087         | 2,254         | 2,254                | 1,817                       |
 | Index lookup/scan on MoodLog             | 0.705        | 504          | 504                 | 0.906 (covering)           |
-| Group aggregate                          | 1369         | —            | —                   | 2627                       |
+| Group aggregate                          | 1,369         | —            | —                   | 2,627                       |
 
 
 #### Valence differences
@@ -241,11 +241,11 @@ LIMIT
 
 | Step                                    | Default | song_id Only Cost | (song_id, mood_label) Cost | (song_id, mood_label, rating) Cost |
 |-------------------------------------------------|---------|--------------|---------------------|----------------------------|
-| Stream results cost                             | 2315    | 2315         | 2315                | 2315                       |
-| Nested loop inner join cost                     | 2315    | 2315         | 2315                | 2315                       |
-| Filter (c.song_id is not null) / Table scan on c| 1423    | 1008         | 1008                | 1008                       |
-| Materialize CTE crowd                           | 1423    | 1008         | 1008                | 1008                       |
-| Filter/Group aggregate (within crowd CTE)       | 1004    | 1004         | 1004                | 1004                       |
+| Stream results cost                             | 2,315    | 2,315         | 2,315                | 2,315                       |
+| Nested loop inner join cost                     | 2,315    | 2,315         | 2,315                | 2,315                       |
+| Filter (c.song_id is not null) / Table scan on c| 1,423    | 1008         | 1,008                | 1,008                       |
+| Materialize CTE crowd                           | 1,423    | 1008         | 1,008                | 1,008                       |
+| Filter/Group aggregate (within crowd CTE)       | 1,004    | 1,004         | 1,004                | 1,004                       |
 | Index scan/covering index scan on MoodLog       | 504     | 504          | 504                 | 504                        |
 
 #### Find playlists with diversed mood
@@ -265,10 +265,10 @@ LIMIT
 
 | Step / Index                                      | Default  | song_id Only | song_id, mood_label | song_id, mood_label, user_id |
 |---------------------------------------------------|----------|--------------|---------------------|------------------------------|
-| Stream results cost                               | 18458    | 773526       | 773526              | 773526                       |
-| Group aggregate: count(distinct m.mood_label) cost| 18458    | 773526       | 773526              | 773526                       |
-| Nested loop inner join (largest join) cost        | 14830    | 393168       | 393168              | 393168                       |
-| Next nested loop inner join cost                  | 3593     | 3593         | 3593                | 3593                         |
+| Stream results cost                               | 18,458    | 773,526       | 773,526              | 773,526                       |
+| Group aggregate: count(distinct m.mood_label) cost| 18458    | 773,526       | 773,526              | 773,526                       |
+| Nested loop inner join (largest join) cost        | 14,830    | 393,168       | 393,168              | 393,168                       |
+| Next nested loop inner join cost                  | 3,593     | 3,593         | 3,593                | 3,593                         |
 | Next nested loop inner join cost                  | 345      | 345          | 345                 | 345                          |
 | Filter: (p.user_id is not null) cost              | 77.4     | 77.4         | 77.4                | 77.4                         |
 | Index scan on Playlist (p) using PRIMARY          | 77.4     | 77.4         | 77.4                | 77.4                         |
@@ -307,9 +307,9 @@ Final re-run with the chosen optimized index shows that overall queries do have 
 | Query | Result Rows | Time (ms) **Default** | Time (ms) **Optimized** | Speed‑up | Root Cost **Default** | Root Cost **Optimized** |
 |-------|-------------|-----------------------|-------------------------|----------|-----------------------|-------------------------|
 | Top happy tracks (30 days) | 40  | 5.54 | 3.28 | **1.7 ×** | 554 | 554 |
-| Active users | 246 | 19.3 | 15.4 | **1.3 ×** | 1 369 | 2 254 |
-| Valence vs crowd | 21  | 10.8 | 2.51 | **4.3 ×** | 2 315 | 2 315 |
-| Playlists (mood diverse) | 764 | 3 979 | 2 837 | **1.4 ×** | 18 458 | 773 526 |
+| Active users | 246 | 19.3 | 15.4 | **1.3 ×** | 1,369 | 2,254 |
+| Valence vs crowd | 21  | 10.8 | 2.51 | **4.3 ×** | 2,315 | 2 315 |
+| Playlists (mood diverse) | 764 | 3,979 | 2,837 | **1.4 ×** | 18,458 | 773,526 |
 
 * **Result Rows** = final rows returned by the query.
 * **Root Cost** = the cost attached to the Stream results (root) node in each plan; cost units are heuristic and do not account for cache, so cost can rise even when latency falls.
