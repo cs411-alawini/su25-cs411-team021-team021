@@ -302,4 +302,14 @@ CREATE INDEX idx_ml_songid_moodlabel_rating ON MoodLog(song_id, mood_label, rati
 ```
 This index provided the lowest total cost for the most complex analytic queries, and It is optimal for queries that join on `song_id`, group or filter by `mood_label`, and aggregate or filter on `rating`.
 
-### 4)
+Final re-run with the chosen optimized index shows that overall queries do have speed-up.
+
+| Query | Result Rows | Time (ms) **Default** | Time (ms) **Optimized** | Speed‑up | Root Cost **Default** | Root Cost **Optimized** |
+|-------|-------------|-----------------------|-------------------------|----------|-----------------------|-------------------------|
+| Top happy tracks (30 days) | 40  | 5.54 | 3.28 | **1.7 ×** | 554 | 554 |
+| Active users | 246 | 19.3 | 15.4 | **1.3 ×** | 1 369 | 2 254 |
+| Valence vs crowd | 21  | 10.8 | 2.51 | **4.3 ×** | 2 315 | 2 315 |
+| Playlists (mood diverse) | 764 | 3 979 | 2 837 | **1.4 ×** | 18 458 | 773 526 |
+
+* **Result Rows** = final rows returned by the query.
+* **Root Cost** = the cost attached to the Stream results (root) node in each plan; cost units are heuristic and do not account for cache, so cost can rise even when latency falls.
