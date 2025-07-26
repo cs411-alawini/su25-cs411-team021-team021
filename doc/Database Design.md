@@ -60,15 +60,16 @@ erDiagram
     }
 
     %% Relationships
-    User ||--o{ MoodLog : "has"
-    User ||--o{ Playlist : "creates"
-    MoodLog ||--|| Playlist : "creates"
-    Playlist ||--o{ PlaylistSong : "contains"
-    Song ||--o{ PlaylistSong : "in"
-    Song ||--o{ SongTag : "tagged with"
-    Tag ||--o{ SongTag : "applies to"
-    User ||--o{ CommunityPost : "writes"
-    Playlist ||--o{ CommunityPost : "shared in"
+    User ||--o{ MoodLog : "(1..1)→(0..n)"
+    User ||--o{ Playlist : "(1..1)→(0..n)"
+    MoodLog ||--|| Playlist : "(1..1) ↔ (1..1)"
+    Playlist ||--o{ PlaylistSong : "(1..1) → (1..n)"
+    PlaylistSong }o--|| Song : "(1..n) ← (1..1)"
+    Song ||--o{ SongTag : "(1..1)→(0..n)"
+    SongTag }o--|| Tag : "(0..n) ← (1..1)"
+    User ||--o{ CommunityPost : "(1..1)→(0..n)"
+    Playlist ||--o{ CommunityPost : "(1..1)→(0..n)"
+
 ```
 
 The ERD represents the [MeloMood](Project%20Description.md) music recommendation system centered around its users and their moods. Each **User**:
