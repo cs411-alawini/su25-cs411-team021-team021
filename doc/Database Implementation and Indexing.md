@@ -250,6 +250,32 @@ LIMIT
 
 #### Find playlists with diversed mood
 
+* **song_id**
+  ```sql
+  CREATE INDEX idx_ml_songid ON MoodLog(song_id);
+   ```
+* **(song_id, mood_label)**
+  ```sql
+  CREATE INDEX idx_ml_songid_moodlabel ON MoodLog(song_id, mood_label);
+  ```
+* **(song_id, mood_label, user_id)**
+  ```sql
+  CREATE INDEX idx_ml_songid_moodlabel_userid ON MoodLog(song_id, mood_label, user_id);
+  ```
+
+| Step / Index                                      | Default  | song_id Only | song_id, mood_label | song_id, mood_label, user_id |
+|---------------------------------------------------|----------|--------------|---------------------|------------------------------|
+| Stream results cost                               | 18458    | 773526       | 773526              | 773526                       |
+| Group aggregate: count(distinct m.mood_label) cost| 18458    | 773526       | 773526              | 773526                       |
+| Nested loop inner join (largest join) cost        | 14830    | 393168       | 393168              | 393168                       |
+| Next nested loop inner join cost                  | 3593     | 3593         | 3593                | 3593                         |
+| Next nested loop inner join cost                  | 345      | 345          | 345                 | 345                          |
+| Filter: (p.user_id is not null) cost              | 77.4     | 77.4         | 77.4                | 77.4                         |
+| Index scan on Playlist (p) using PRIMARY          | 77.4     | 77.4         | 77.4                | 77.4                         |
+| Single-row index lookup on User (u) using PRIMARY | 0.25     | 0.25         | 0.25                | 0.25                         |
+| Covering index lookup on PlaylistSong (ps)        | 0.274    | 0.274        | 0.274               | 0.274                        |
+| Covering index lookup on MoodLog (m)              | 0.25     | 0.303        | 0.303               | 0.303                        |
+
 ### 3) Final index design
 
 ### 4)
