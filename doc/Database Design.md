@@ -99,7 +99,7 @@ User(
   Username: VARCHAR(255),
   PasswordHash: VARCHAR(255),
   Email: VARCHAR(255),
-  ProfileSettings: TEXT
+  ProfileSettings: VARCHAR(1000)
 )
 ```
 
