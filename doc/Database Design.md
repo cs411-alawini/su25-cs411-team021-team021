@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS PlaylistSong (
 Tag(
   TagId: INT [PK],
   Name: VARCHAR(64),
-  Description: TEXT
+  Description: VARCHAR(255)
 )
 ```
 
@@ -289,7 +289,7 @@ CommunityPost(
   PostId: INT [PK],
   UserId: INT [FK to User.UserId],
   PlaylistId: INT [FK to Playlist.PlaylistId],
-  Content: TEXT,
+  Content: VARCHAR(255),
   PostedAt: DATETIME,
   Title: VARCHAR(255)
 )
@@ -328,10 +328,10 @@ SongTag(
 
 | Entity            | Primary Key (PK)       | Functional Dependencies                                                       | Normal Form |
 | ----------------- | ---------------------- | ----------------------------------------------------------------------------- | ----------- |
-| **User**          | UserId                 | UserId → Username, PasswordHash, Email, ProfileSettings                       | BCNF        |
+| **User**          | UserId                 | UserId → Username, PasswordHash, Email, ProfileSettings <br>Email → Username                      | BCNF        |
 | **MoodLog**       | MoodLogId              | MoodLogId → UserId, Timestamp, MoodLabel, Notes                               | BCNF        |
 | **Playlist**      | PlaylistId             | PlaylistId → MoodLogId, CreatedAt, Title, Description<br> MoodLogId → UserId  | 3NF         |
-| **Song**          | SongId                 | SongId → Title, Artist, Genre, Valence, Duration, Album, ReleaseYear          | BCNF        |
+| **Song**          | SongId                 | SongId → Title, Artist, (Title, Artist) → Duration, Album, ReleaseYear, Genre, Valence          | BCNF        |
 | **PlaylistSong**  | (PlaylistId, Position) | (PlaylistId, Position) → SongId <br> UNIQUE (PlaylistId, SongId)              | BCNF        |
 | **Tag**           | TagId                  | TagId → Name, Description                                                     | BCNF        |
 | **SongTag**       | (SongId, TagId)        | No non-key attributes: → ∅                                                    | BCNF        |
