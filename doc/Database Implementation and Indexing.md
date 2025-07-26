@@ -175,6 +175,24 @@ LIMIT
 
 ### 2) Explore tradeoffs of adding different indices
 
+#### Top happy tracks in last 30 days
+| Step                                | Default Cost | MoodLabel Cost | (mood_label, ts) Cost | (mood_label, ts, song_id) Cost |
+|--------------------------------------|--------------|---------------|-----------------------|-------------------------------|
+| Table scan on MoodLog (m)           | 437          | —             | —                     | —                             |
+| Index lookup on mood_label           | —            | 45.5          | —                     | —                             |
+| Index range scan on mood_label, ts   | —            | —             | 153                   | 153                           |
+| Nested loop inner join               | 554          | 163           | 272                   | 272                           |
+| Rows after filter (m.*)              | 340          | 340           | 340                   | 340                           |
+| Single-row PK lookup on Song         | 0.25         | 0.25          | 0.25                  | 0.25                          |
+| Rows after aggregation (GROUP BY)    | 40           | 40            | 40                    | 40                            |
+| Sort final result                    | 40           | 40            | 40                    | 40                            |
+
+#### Find active users
+
+#### Valence differences
+
+#### Find playlists with diversed mood
+
 ### 3) Final index design
 
 ### 4)
