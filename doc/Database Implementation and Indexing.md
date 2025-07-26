@@ -32,8 +32,12 @@ GROUP BY
 HAVING
     votes >= 2
 ORDER BY
-    avg_happy_rating DESC;
+    avg_happy_rating DESC
+LIMIT
+    15;
 ```
+
+![Top 15 results](figures/advance1_top15.png)
 
 #### Select active users
 Selects the users who have logged >= 3 moods with average ratings >= 80.
@@ -53,8 +57,12 @@ HAVING
     distinct_moods >= 3
     AND avg_rating >= 80
 ORDER BY
-    total_logs DESC;
+    total_logs DESC
+LIMIT
+    15;
 ```
+
+![Top 15 results](figures/advance2_top15.png)
 
 #### Valence difference
 ```sql
@@ -81,8 +89,12 @@ WHERE
 HAVING
     diff > 0.30
 ORDER BY
-    diff DESC;
+    diff DESC
+LIMIT
+    15;
 ```
+
+![Top 15 results](figures/advance3_top15.png)
 
 #### Finding playlists with diversed mood
 Finds the top 15 playlists by mood diversity and size, and shows moods represented and total number of logs considered for analysis.
@@ -107,6 +119,8 @@ ORDER BY
 LIMIT
     15;
 ```
+
+![Top 15 results](figures/advance4_top15.png)
 
 ## Part 2
 ### 1) `EXPLAIN ANALYZE`
