@@ -278,4 +278,28 @@ LIMIT
 
 ### 3) Final index design
 
+1. **Top happy tracks in last 30 days**
+Adding the single-column index on `mood_label` significantly reduced filter cost (from 437 to 45.5), but a composite index on `(mood_label, ts)` improved range scan cost (to 153).
+The best overall performance (lowest join cost, optimal filtering) was observed with the covering index on `(mood_label, ts, song_id)`.
+
+2. **Find active users**
+For this aggregation-heavy query, adding a composite covering index on `(user_id, mood_label, rating)` yielded the best index lookup cost (0.906), with the lowest join cost and efficient group aggregation. Single-column or two-column indexes offered less improvement. Noted that, even with all the improvements, default index is actually better.
+
+3. **Valence differences**
+The CTE (`crowd`) groups and averages ratings by `song_id` and `mood_label`. Here, both the composite index `(song_id, mood_label)` and the covering index `(song_id, mood_label, rating)` provided efficient group aggregate costs (1004), but the covering index allowed the query to be resolved directly from the index, which _could_ help improving memory and CPU usage.
+
+4. **Find playlists with diverse mood**
+This was the most expensive query. The default index (on `(song_id, mood_label)`) was already composite, but covering indexes somehow greatly increase group aggregate cost.
+
+Based on these observations,
+- Single-column indexes only helped on simple filters or joins, but did not help with aggregations that use more than one column.
+- Two-column composite indexes worked well for joins plus aggregations involving both columns.
+- Covering indexes offered the best performance for complex analytics, as seen in most of our queries, by allowing MySQL to satisfy more of the query directly from the index, reducing disk I/O and avoiding extra lookups.
+
+Based on the query plan cost analysis above, we selected a covering index for each main analytic pattern:
+```sql
+CREATE INDEX idx_ml_songid_moodlabel_rating ON MoodLog(song_id, mood_label, rating);
+```
+This index provided the lowest total cost for the most complex analytic queries, and It is optimal for queries that join on `song_id`, group or filter by `mood_label`, and aggregate or filter on `rating`.
+
 ### 4)
