@@ -6,7 +6,6 @@
 <body>
     <h1>MeloMood - Generate Playlist by Mood</h1>
     
-    <!-- MAIN FEATURE: Generate Playlist -->
     <h2>Generate Playlist</h2>
     <button onclick="generatePlaylist('Happy')">Happy Playlist</button>
     <button onclick="generatePlaylist('Sad')">Sad Playlist</button>
@@ -15,7 +14,6 @@
     <button onclick="generatePlaylist('Angry')">Angry Playlist</button>
     <div id="playlist"></div>
 
-    <!-- CREATE -->
     <h2>Add Mood Log</h2>
     <select id="user">
         <option value="">Select User</option>
@@ -35,12 +33,10 @@
     <button onclick="addMood()">Add</button>
     <div id="add-result"></div>
 
-    <!-- READ -->
     <h2>Recent Mood Logs</h2>
     <button onclick="loadMoods()">Load Moods</button>
     <div id="moods"></div>
 
-    <!-- SEARCH -->
     <h2>Search Songs</h2>
     <input type="text" id="search" placeholder="Search songs...">
     <button onclick="searchSongs()">Search</button>
@@ -49,7 +45,6 @@
     <script>
         const API = "http://127.0.0.1:5000";
 
-        // Load initial data
         fetch(`${API}/users`).then(r => r.json()).then(users => {
             const select = document.getElementById('user');
             users.forEach(u => {
@@ -64,7 +59,6 @@
             });
         });
 
-        // MAIN FEATURE: Generate playlist
         function generatePlaylist(mood) {
             fetch(`${API}/playlist/${mood}`)
                 .then(r => r.json())
@@ -77,7 +71,6 @@
                 });
         }
 
-        // CREATE
         function addMood() {
             const data = {
                 user_id: document.getElementById('user').value,
@@ -98,7 +91,6 @@
             });
         }
 
-        // READ
         function loadMoods() {
             fetch(`${API}/moods`)
                 .then(r => r.json())
@@ -110,7 +102,6 @@
                 });
         }
 
-        // DELETE
         function deleteMood(id) {
             fetch(`${API}/moods/${id}`, {method: 'DELETE'})
                 .then(r => r.json())
@@ -120,7 +111,6 @@
                 });
         }
 
-        // SEARCH
         function searchSongs() {
             const query = document.getElementById('search').value;
             fetch(`${API}/search?q=${query}`)
@@ -132,7 +122,6 @@
                 });
         }
 
-        // Load moods on page load
         loadMoods();
     </script>
 </body>
