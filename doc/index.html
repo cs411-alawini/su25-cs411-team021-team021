@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MeloMood</title>
+</head>
+<body>
+    <h1>MeloMood - Generate Playlist by Mood</h1>
+    
+    <!-- MAIN FEATURE: Generate Playlist -->
+    <h2>Generate Playlist</h2>
+    <button onclick="generatePlaylist('Happy')">Happy Playlist</button>
+    <button onclick="generatePlaylist('Sad')">Sad Playlist</button>
+    <button onclick="generatePlaylist('Calm')">Calm Playlist</button>
+    <button onclick="generatePlaylist('Energetic')">Energetic Playlist</button>
+    <button onclick="generatePlaylist('Angry')">Angry Playlist</button>
+    <div id="playlist"></div>
+
+    <!-- CREATE -->
+    <h2>Add Mood Log</h2>
+    <select id="user">
+        <option value="">Select User</option>
+    </select>
+    <select id="song">
+        <option value="">Select Song</option>
+    </select>
+    <select id="mood">
+        <option value="">Select Mood</option>
+        <option value="Happy">Happy</option>
+        <option value="Sad">Sad</option>
+        <option value="Calm">Calm</option>
+        <option value="Energetic">Energetic</option>
+        <option value="Angry">Angry</option>
+    </select>
+    <input type="number" id="rating" placeholder="Rating 1-100" min="1" max="100">
+    <button onclick="addMood()">Add</button>
+    <div id="add-result"></div>
+
+    <!-- READ -->
+    <h2>Recent Mood Logs</h2>
+    <button onclick="loadMoods()">Load Moods</button>
+    <div id="moods"></div>
+
+    <!-- SEARCH -->
+    <h2>Search Songs</h2>
+    <input type="text" id="search" placeholder="Search songs...">
+    <button onclick="searchSongs()">Search</button>
+    <div id="search-results"></div>
+
+    <script>
+        const API = "http://127.0.0.1:5000";
+
+        // Load initial data
+        fetch(`${API}/users`).then(r => r.json()).then(users => {
+            const select = document.getElementById('user');
+            users.forEach(u => {
+                select.innerHTML += `<option value="${u.user_id}">${u.username}</option>`;
+            });
+        });
+
+        fetch(`${API}/songs`).then(r => r.json()).then(songs => {
+            const select = document.getElementById('song');
+            songs.forEach(s => {
+                select.innerHTML += `<option value="${s.song_id}">${s.track_name} - ${s.artist}</option>`;
+            });
+        });
+
+        // MAIN FEATURE: Generate playlist
+        function generatePlaylist(mood) {
+            fetch(`${API}/playlist/${mood}`)
+                .then(r => r.json())
+                .then(songs => {
+                    document.getElementById('playlist').innerHTML = 
+                        `<h3>${mood} Playlist:</h3>` +
+                        songs.map((s, i) => 
+                            `<div>${i+1}. ${s.track_name} - ${s.artist} (Avg Rating: ${s.avg_rating || 'New'})</div>`
+                        ).join('');
+                });
+        }
+
+        // CREATE
+        function addMood() {
+            const data = {
+                user_id: document.getElementById('user').value,
+                song_id: document.getElementById('song').value,
+                mood_label: document.getElementById('mood').value,
+                rating: document.getElementById('rating').value
+            };
+
+            fetch(`${API}/moods`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(result => {
+                document.getElementById('add-result').innerHTML = result.message;
+                loadMoods();
+            });
+        }
+
+        // READ
+        function loadMoods() {
+            fetch(`${API}/moods`)
+                .then(r => r.json())
+                .then(moods => {
+                    document.getElementById('moods').innerHTML = moods.map(m => 
+                        `<div>${m.username} felt ${m.mood_label} listening to ${m.track_name} [${m.rating}/100] 
+                        <button onclick="deleteMood(${m.log_id})">Delete</button></div>`
+                    ).join('');
+                });
+        }
+
+        // DELETE
+        function deleteMood(id) {
+            fetch(`${API}/moods/${id}`, {method: 'DELETE'})
+                .then(r => r.json())
+                .then(result => {
+                    alert(result.message);
+                    loadMoods();
+                });
+        }
+
+        // SEARCH
+        function searchSongs() {
+            const query = document.getElementById('search').value;
+            fetch(`${API}/search?q=${query}`)
+                .then(r => r.json())
+                .then(songs => {
+                    document.getElementById('search-results').innerHTML = songs.map(s => 
+                        `<div>${s.track_name} - ${s.artist}</div>`
+                    ).join('');
+                });
+        }
+
+        // Load moods on page load
+        loadMoods();
+    </script>
+</body>
+</html>
