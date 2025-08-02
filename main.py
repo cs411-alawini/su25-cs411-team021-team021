@@ -8,7 +8,7 @@ CORS(app)
 
 
 def get_db():
-    cfg = load_db_credentials("db_config.txt")
+    cfg = load_db_credentials()
     print(cfg)
     return mysql.connector.connect(
         host=cfg["DB_HOST"],
