@@ -2,11 +2,13 @@ name: melomood
 
 channels:
   - defaults
-  - conda-forge
 
 dependencies:
   - python=3.10
   - ipykernel
-  - python-dotenv
   - pandas
   - mysql-connector-python
+  - flask
+  - gunicorn
+  - pip:
+    - flask-cors
