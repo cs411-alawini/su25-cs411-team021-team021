@@ -7,7 +7,6 @@ ENV PORT=8000
 WORKDIR $APP_HOME
 
 COPY . .
-COPY scripts/db_config.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
