@@ -5,3 +5,11 @@ README.md
 *.pyd
 __pycache__
 .pytest_cache
+
+TeamInfo.md
+build.sh
+schemas/
+scripts/
+!scripts/db_config.txt
+data/
+doc/

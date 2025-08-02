@@ -1,12 +1,13 @@
 FROM python:3.10-slim
 
-ENV PYTHONUNBUFFERED=True
+ENV PYTHONUNBUFFERED=False
 ENV APP_HOME=/app
 ENV PORT=8000
 
 WORKDIR $APP_HOME
 
-COPY . ./
+COPY . .
+COPY scripts/db_config.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 

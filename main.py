@@ -1,14 +1,20 @@
 import mysql.connector
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
+from config import load_db_credentials
 
 app = Flask(__name__)
 CORS(app)
 
 
 def get_db():
+    cfg = load_db_credentials("db_config.txt")
+    print(cfg)
     return mysql.connector.connect(
-        host="35.184.247.220", user="melomood", password="P@ssword", database="melodb"
+        host=cfg["DB_HOST"],
+        user=cfg["DB_USER"],
+        password=cfg["DB_PASS"],
+        database=cfg["DB_NAME"],
     )
 
 
