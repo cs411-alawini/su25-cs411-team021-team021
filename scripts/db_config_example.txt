@@ -1,4 +1,2 @@
-MELODB_HOST=127.0.0.1
 MELODB_USER=username
 MELODB_PASS=password
-MELODB_NAME=mydatabase
