@@ -11,10 +11,10 @@ def get_db():
     cfg = load_db_credentials()
     print(cfg)
     return mysql.connector.connect(
-        host=cfg["DB_HOST"],
-        user=cfg["DB_USER"],
-        password=cfg["DB_PASS"],
-        database=cfg["DB_NAME"],
+        host=cfg["MELODB_HOST"],
+        user=cfg["MELODB_USER"],
+        password=cfg["MELODB_PASS"],
+        database=cfg["MELODB_NAME"],
     )
 
 
