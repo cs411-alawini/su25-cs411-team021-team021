@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 import mysql.connector
+from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +14,7 @@ def get_db():
 
 @app.route("/")
 def index():
-    return "MeloMood API Running"
+    return render_template("index.html")
 
 
 @app.route("/playlist/<mood>", methods=["GET"])
