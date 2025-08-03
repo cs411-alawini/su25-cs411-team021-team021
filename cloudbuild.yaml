@@ -1,9 +1,17 @@
 steps:
+  # Build the image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/melomood', '.' ]
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/su25-cs411-team021-team021', '.']
+  # Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/su25-cs411-team021-team021']
+  # Deploy image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', 'su25-cs411-team021-team021', '--image', 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/su25-cs411-team021-team021', '--region', 'us-central1']
 
 images:
-  - 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/melomood'
+  - 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/su25-cs411-team021-team021'
 
 options:
   logging: CLOUD_LOGGING_ONLY
