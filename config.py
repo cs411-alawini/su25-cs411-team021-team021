@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 from typing import Optional, Dict
 
-_REQUIRED_DB_KEYS = {"MELODB_HOST", "MELODB_USER", "MELODB_PASS", "MELODB_NAME"}
+_REQUIRED_DB_KEYS = {"MELODB_USER", "MELODB_PASS"}
 
 
 def load_db_credentials(path: Optional[str] = None) -> Dict[str, str]:
