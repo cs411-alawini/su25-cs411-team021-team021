@@ -11,7 +11,7 @@ steps:
     args: ['run', 'deploy', 'su25-cs411-team021-team021', '--image', 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/melomood-main', '--region', 'us-central1']
 
 images:
-  - 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/su25-cs411-team021-team021'
+  - 'us-central1-docker.pkg.dev/cs411-team021/su25-cs411-team021-team021/melomood-main'
 
 options:
   logging: CLOUD_LOGGING_ONLY
