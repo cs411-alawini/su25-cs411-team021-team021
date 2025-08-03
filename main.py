@@ -1,24 +1,45 @@
+import logging
+from contextlib import closing
+
 import mysql.connector
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
-from config import load_db_credentials
-import logging
 
+from config import load_db_credentials
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)
 
 
 def get_db():
     cfg = load_db_credentials()
-    logging.debug('Accessing DB through user "{User}"', cfg["MELODB_USER"])
+    logger.debug('Accessing DB through user "{User}"', cfg["MELODB_USER"])
     c = mysql.connector.connect(
         unix_socket="/cloudsql/cs411-team021:us-central1:team021-sql-test",
         user=cfg["MELODB_USER"],
         password=cfg["MELODB_PASS"],
         database="melodb",
     )
-    logging.debug('MySQL connector {Connector}', c)
+    logger.debug("MySQL connector {Connector}", c)
     return c
+
+
+@app.route("/status", methods=["GET"])
+def status():
+    try:
+        with closing(get_db()) as conn, conn.cursor() as cur:
+            cur.execute("SELECT 1")
+            cur.fetchone()  # if this fails, an exception is raised
+        return jsonify(status="ok"), 200
+    except Exception as exc:
+        logger.exception("DB health check failed")
+        return jsonify(status="error", detail=str(exc)), 500
 
 
 @app.route("/")
@@ -140,5 +161,5 @@ def search():
 
 
 if __name__ == "__main__":
-    print("Starting MeloMood...")
+    logger.warning("Starting MeloMood...")
     app.run(debug=True, host="0.0.0.0", port=8000)
