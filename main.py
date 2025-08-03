@@ -2,6 +2,7 @@ import mysql.connector
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from config import load_db_credentials
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -9,13 +10,15 @@ CORS(app)
 
 def get_db():
     cfg = load_db_credentials()
-    print(cfg)
-    return mysql.connector.connect(
+    logging.debug('Accessing DB through user "{User}"', cfg["MELODB_USER"])
+    c = mysql.connector.connect(
         unix_socket="/cloudsql/cs411-team021:us-central1:team021-sql-test",
         user=cfg["MELODB_USER"],
         password=cfg["MELODB_PASS"],
         database="melodb",
     )
+    logging.debug('MySQL connector {Connector}', c)
+    return c
 
 
 @app.route("/")
