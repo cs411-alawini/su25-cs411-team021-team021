@@ -11,7 +11,7 @@ def get_db():
     cfg = load_db_credentials()
     print(cfg)
     return mysql.connector.connect(
-        host="127.0.0.1",
+        unix_socket="/cloudsql/cs411-team021:us-central1:team021-sql-test",
         user=cfg["MELODB_USER"],
         password=cfg["MELODB_PASS"],
         database="melodb",
