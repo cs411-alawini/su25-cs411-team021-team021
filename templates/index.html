@@ -2,54 +2,293 @@
 <html>
 <head>
     <title>MeloMood</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f0f2f5; 
+            min-height: 100vh; 
+            color: #333; 
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+        }
+        h1 { 
+            text-align: center; 
+            font-size: 2.5rem; 
+            margin-bottom: 10px; 
+            color: #333; 
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .tabs { 
+            display: flex; 
+            justify-content: center; 
+            margin-bottom: 20px; 
+            background: #fff; 
+            border-radius: 8px; 
+            padding: 4px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .tab-button { 
+            background: none; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 6px; 
+            color: #666; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            transition: all 0.2s;
+        }
+        .tab-button.active { 
+            background: #4285f4; 
+            color: white; 
+        }
+        .tab-button:hover:not(.active) {
+            background: #f5f5f5;
+        }
+        .tab-content { 
+            display: none; 
+            background: white; 
+            border-radius: 8px; 
+            padding: 30px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .tab-content.active { 
+            display: block; 
+        }
+        .tab-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        .mood-buttons { 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            margin: 20px 0; 
+        }
+        .mood-btn { 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 20px; 
+            color: white; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            transition: transform 0.2s;
+        }
+        .mood-btn:hover {
+            transform: translateY(-2px);
+        }
+        .mood-btn.happy { background: #ff9800; }
+        .mood-btn.sad { background: #4285f4; }
+        .mood-btn.calm { background: #4caf50; }
+        .mood-btn.energetic { background: #f44336; }
+        .mood-btn.angry { background: #9c27b0; }
+        .custom-mood-section { 
+            margin: 30px 0; 
+            text-align: center; 
+        }
+        .custom-mood-section h3 {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .custom-mood-input { 
+            display: flex; 
+            gap: 10px; 
+            max-width: 400px; 
+            margin: 0 auto; 
+        }
+        .custom-mood-input input { 
+            flex: 1; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            font-size: 1rem;
+        }
+        #playlist { 
+            background: #f8f9fa; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-top: 20px; 
+        }
+        #playlist h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .song-item { 
+            background: white; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 6px; 
+            border-left: 4px solid #4285f4;
+            font-size: 1rem;
+        }
+        select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        .btn-danger {
+            background: #f44336;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        .mood-log-item { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 6px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-left: 4px solid #4caf50;
+        }
+        .search-item { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 8px 0; 
+            border-radius: 6px;
+            border-left: 4px solid #ff9800;
+        }
+        .error { 
+            color: #f44336; 
+            background: #ffebee; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin: 10px 0; 
+        }
+        .success { 
+            color: #4caf50; 
+            background: #e8f5e8; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin: 10px 0; 
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) { 
+            .container { padding: 10px; }
+            .tabs { flex-direction: column; }
+            .custom-mood-input { flex-direction: column; }
+            .mood-log-item { flex-direction: column; gap: 10px; align-items: stretch; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
 </head>
 <body>
-    <h1>MeloMood - Generate Playlist by Mood</h1>
+    <div class="container">
+        <h1>MeloMood</h1>
+        <p class="subtitle">Discover music that matches your mood</p>
 
-    <h2>Generate Playlist</h2>
-    <button onclick="generatePlaylist('Happy')">Happy Playlist</button>
-    <button onclick="generatePlaylist('Sad')">Sad Playlist</button>
-    <button onclick="generatePlaylist('Calm')">Calm Playlist</button>
-    <button onclick="generatePlaylist('Energetic')">Energetic Playlist</button>
-    <button onclick="generatePlaylist('Angry')">Angry Playlist</button>
-    <div id="playlist"></div>
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('playlist')">Generate Playlist</button>
+            <button class="tab-button" onclick="showTab('mood-logs')">Mood Logs</button>
+            <button class="tab-button" onclick="showTab('search')">Search Songs</button>
+        </div>
 
-    <h2>Add Mood Log</h2>
-    <select id="user">
-        <option value="">Select User</option>
-    </select>
-    <select id="song">
-        <option value="">Select Song</option>
-    </select>
-    <select id="mood">
-        <option value="">Select Mood</option>
-        <option value="Happy">Happy</option>
-        <option value="Sad">Sad</option>
-        <option value="Calm">Calm</option>
-        <option value="Energetic">Energetic</option>
-        <option value="Angry">Angry</option>
-    </select>
-    <input type="number" id="rating" placeholder="Rating 1-100" min="1" max="100">
-    <button onclick="addMood()">Add</button>
-    <div id="add-result"></div>
+        <div id="playlist-tab" class="tab-content active">
+            <h2>Generate Playlist by Mood</h2>
+            <div class="mood-buttons">
+                <button class="mood-btn happy" onclick="generatePlaylist('Happy')">Happy</button>
+                <button class="mood-btn sad" onclick="generatePlaylist('Sad')">Sad</button>
+                <button class="mood-btn calm" onclick="generatePlaylist('Calm')">Calm</button>
+                <button class="mood-btn energetic" onclick="generatePlaylist('Energetic')">Energetic</button>
+                <button class="mood-btn angry" onclick="generatePlaylist('Angry')">Angry</button>
+            </div>
+            
+            <div class="custom-mood-section">
+                <h3>Or describe your own mood:</h3>
+                <div class="custom-mood-input">
+                    <input type="text" id="custom-mood" placeholder="Enter your mood...">
+                    <button onclick="generateCustomPlaylist()">Generate</button>
+                </div>
+            </div>
+            
+            <div id="playlist"></div>
+        </div>
 
-    <h2>Recent Mood Logs</h2>
-    <button onclick="loadMoods()">Load Moods</button>
-    <div id="moods"></div>
+        <div id="mood-logs-tab" class="tab-content">
+            <h2>Add Mood Log</h2>
+            <select id="user">
+                <option value="">Select User</option>
+            </select>
+            <select id="song">
+                <option value="">Select Song</option>
+            </select>
+            <select id="mood">
+                <option value="">Select Mood</option>
+                <option value="Happy">Happy</option>
+                <option value="Sad">Sad</option>
+                <option value="Calm">Calm</option>
+                <option value="Energetic">Energetic</option>
+                <option value="Angry">Angry</option>
+            </select>
+            <input type="number" id="rating" placeholder="Rating 1-100" min="1" max="100">
+            <button onclick="addMood()">Add Mood Log</button>
+            <div id="add-result"></div>
 
-    <h2>Search Songs</h2>
-    <input type="text" id="search" placeholder="Search songs...">
-    <button onclick="searchSongs()">Search</button>
-    <div id="search-results"></div>
+            <div style="margin-top: 40px;">
+                <h2>Recent Mood Logs</h2>
+                <button onclick="loadMoods()">Refresh Mood Logs</button>
+                <div id="moods"></div>
+            </div>
+        </div>
+
+        <div id="search-tab" class="tab-content">
+            <h2>Search Songs</h2>
+            <input type="text" id="search" placeholder="Search songs or artists...">
+            <button onclick="searchSongs()">Search</button>
+            <div id="search-results"></div>
+        </div>
+    </div>
 
     <script>
         const API = "https://su25-cs411-team021-team021-11849892885.us-central1.run.app";
 
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'mood-logs') {
+                loadMoods();
+            }
+        }
         fetch(`${API}/users`).then(r => r.json()).then(users => {
             const select = document.getElementById('user');
             users.forEach(u => {
                 select.innerHTML += `<option value="${u.user_id}">${u.username}</option>`;
             });
+        }).catch(err => {
+            console.error('Error loading users:', err);
         });
 
         fetch(`${API}/songs`).then(r => r.json()).then(songs => {
@@ -57,27 +296,53 @@
             songs.forEach(s => {
                 select.innerHTML += `<option value="${s.song_id}">${s.track_name} - ${s.artist}</option>`;
             });
+        }).catch(err => {
+            console.error('Error loading songs:', err);
         });
-
+        function generateCustomPlaylist() {
+            const mood = document.getElementById('custom-mood').value.trim();
+            if (!mood) {
+                document.getElementById('playlist').innerHTML = '<div class="error">Please enter a mood</div>';
+                return;
+            }
+            generatePlaylist(mood);
+        }
         function generatePlaylist(mood) {
+            document.getElementById('playlist').innerHTML = '<p>Loading playlist...</p>';
             fetch(`${API}/playlist/${mood}`)
                 .then(r => r.json())
                 .then(songs => {
+                    if (songs.length === 0) {
+                        document.getElementById('playlist').innerHTML = `<div class="error">No songs found for ${mood} mood</div>`;
+                        return;
+                    }
                     document.getElementById('playlist').innerHTML =
-                        `<h3>${mood} Playlist:</h3>` +
+                        `<h3>${mood} Playlist</h3>` +
                         songs.map((s, i) =>
-                            `<div>${i+1}. ${s.track_name} - ${s.artist} (Avg Rating: ${s.avg_rating || 'New'})</div>`
+                            `<div class="song-item">${i+1}. <strong>${s.track_name}</strong> by ${s.artist} ${s.avg_rating ? `(Rating: ${Math.round(s.avg_rating)}/100)` : '(New)'}</div>`
                         ).join('');
+                })
+                .catch(err => {
+                    document.getElementById('playlist').innerHTML = '<div class="error">Error loading playlist</div>';
                 });
         }
-
         function addMood() {
             const data = {
-                user_id: document.getElementById('user').value,
-                song_id: document.getElementById('song').value,
+                user_id: parseInt(document.getElementById('user').value),
+                song_id: parseInt(document.getElementById('song').value),
                 mood_label: document.getElementById('mood').value,
-                rating: document.getElementById('rating').value
+                rating: parseInt(document.getElementById('rating').value)
             };
+
+            if (!data.user_id || !data.song_id || !data.mood_label || !data.rating) {
+                document.getElementById('add-result').innerHTML = '<div class="error">Please fill in all fields</div>';
+                return;
+            }
+
+            if (data.rating < 1 || data.rating > 100) {
+                document.getElementById('add-result').innerHTML = '<div class="error">Rating must be between 1 and 100</div>';
+                return;
+            }
 
             fetch(`${API}/moods`, {
                 method: 'POST',
@@ -86,43 +351,82 @@
             })
             .then(r => r.json())
             .then(result => {
-                document.getElementById('add-result').innerHTML = result.message;
+                document.getElementById('add-result').innerHTML = '<div class="success">' + result.message + '</div>';
                 loadMoods();
+                document.getElementById('user').value = '';
+                document.getElementById('song').value = '';
+                document.getElementById('mood').value = '';
+                document.getElementById('rating').value = '';
+            })
+            .catch(err => {
+                document.getElementById('add-result').innerHTML = '<div class="error">Error adding mood log</div>';
             });
         }
-
         function loadMoods() {
+            document.getElementById('moods').innerHTML = '<p>Loading mood logs...</p>';
             fetch(`${API}/moods`)
                 .then(r => r.json())
                 .then(moods => {
+                    if (moods.length === 0) {
+                        document.getElementById('moods').innerHTML = '<p>No mood logs found</p>';
+                        return;
+                    }
                     document.getElementById('moods').innerHTML = moods.map(m =>
-                        `<div>${m.username} felt ${m.mood_label} listening to ${m.track_name} [${m.rating}/100]
-                        <button onclick="deleteMood(${m.log_id})">Delete</button></div>`
+                        `<div class="mood-log-item">
+                            <div><strong>${m.username}</strong> felt <strong>${m.mood_label}</strong> listening to <strong>${m.track_name}</strong> [${m.rating}/100]</div>
+                            <button class="btn-danger" onclick="deleteMood(${m.log_id})">Delete</button>
+                        </div>`
                     ).join('');
+                })
+                .catch(err => {
+                    document.getElementById('moods').innerHTML = '<div class="error">Error loading mood logs</div>';
                 });
         }
-
         function deleteMood(id) {
-            fetch(`${API}/moods/${id}`, {method: 'DELETE'})
+            if (confirm('Are you sure you want to delete this mood log?')) {
+                fetch(`${API}/moods/${id}`, {method: 'DELETE'})
                 .then(r => r.json())
                 .then(result => {
-                    alert(result.message);
                     loadMoods();
+                })
+                .catch(err => {
+                    alert('Error deleting mood log');
                 });
+            }
         }
-
         function searchSongs() {
-            const query = document.getElementById('search').value;
-            fetch(`${API}/search?q=${query}`)
+            const query = document.getElementById('search').value.trim();
+            if (!query) {
+                document.getElementById('search-results').innerHTML = '<div class="error">Please enter a search term</div>';
+                return;
+            }
+            
+            document.getElementById('search-results').innerHTML = '<p>Searching...</p>';
+            fetch(`${API}/search?q=${encodeURIComponent(query)}`)
                 .then(r => r.json())
                 .then(songs => {
+                    if (songs.length === 0) {
+                        document.getElementById('search-results').innerHTML = '<p>No songs found</p>';
+                        return;
+                    }
                     document.getElementById('search-results').innerHTML = songs.map(s =>
-                        `<div>${s.track_name} - ${s.artist}</div>`
+                        `<div class="search-item"><strong>${s.track_name}</strong> by ${s.artist}</div>`
                     ).join('');
+                })
+                .catch(err => {
+                    document.getElementById('search-results').innerHTML = '<div class="error">Error searching songs</div>';
                 });
         }
-
-        loadMoods();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMoods();
+            document.getElementById('search').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchSongs();
+            });
+            
+            document.getElementById('custom-mood').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') generateCustomPlaylist();
+            });
+        });
     </script>
 </body>
 </html>
