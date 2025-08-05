@@ -1,3 +1,4 @@
+import hashlib
 import logging
 from contextlib import closing
 
@@ -67,7 +68,8 @@ def generate_playlist(mood):
     cursor.close()
     db.close()
     return jsonify(result)
-    
+
+
 @app.route("/playlist/mix", methods=["POST"])
 def make_mixed_playlist():
     data = request.get_json()
@@ -90,7 +92,6 @@ def make_mixed_playlist():
         conn.commit()
     return jsonify({"playlist_id": new_id}), 201
 
- 
 
 @app.route("/moods", methods=["POST"])
 def add_mood():
@@ -139,8 +140,9 @@ def delete_mood(log_id):
     cursor.close()
     db.close()
     return jsonify({"message": "Deleted"})
-@app.route("/mood-labels", methods=["GET"])
 
+
+@app.route("/mood-labels", methods=["GET"])
 def get_mood_labels():
     db = get_db()
     cursor = db.cursor()
@@ -158,6 +160,7 @@ def add_mood_label():
         cursor.execute("INSERT IGNORE INTO Mood (mood_label) VALUES (%s)", (label,))
         db.commit()
     return jsonify({"ok": True})
+
 
 @app.route("/users", methods=["GET"])
 def get_users():
@@ -199,6 +202,49 @@ def search():
     cursor.close()
     db.close()
     return jsonify(result)
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    username = data["username"].strip()
+    password = data["password"].encode("utf-8")
+    pw_hash = hashlib.sha256(password).hexdigest()
+
+    try:
+        with closing(get_db()) as db, db.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO User (username, password_hash) VALUES (%s, %s)",
+                (username, pw_hash),
+            )
+            db.commit()
+        return jsonify({"ok": True, "message": "Registered!"}), 201
+    except mysql.connector.errors.IntegrityError:
+        return jsonify({"ok": False, "message": "Username already exists"}), 409
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data["username"].strip()
+    password = data["password"].encode("utf-8")
+    pw_hash = hashlib.sha256(password).hexdigest()
+
+    with closing(get_db()) as db, db.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            "SELECT user_id FROM User WHERE username = %s AND password_hash = %s",
+            (username, pw_hash),
+        )
+        row = cursor.fetchone()
+    if row:
+        return (
+            jsonify(
+                {"ok": True, "user_id": row["user_id"], "message": "Login success"}
+            ),
+            200,
+        )
+    else:
+        return jsonify({"ok": False, "message": "Invalid credentials"}), 401
 
 
 if __name__ == "__main__":
