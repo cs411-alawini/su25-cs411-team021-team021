@@ -524,6 +524,7 @@
             };
             
             customMoods.push(newMood);
+            saveCustomMoodsToStorage();
             
             document.getElementById('custom-mood-result').innerHTML = '<div class="success">Custom mood "' + name + '" created successfully!</div>';
             document.getElementById('new-mood-name').value = '';
@@ -531,6 +532,7 @@
             
             loadCustomMoods();
             updateMoodSelects();
+            
         }
 
         function loadCustomMoods() {
@@ -555,6 +557,7 @@
         function deleteCustomMood(id) {
             if (confirm('Are you sure you want to delete this custom mood?')) {
                 customMoods = customMoods.filter(mood => mood.id !== id);
+                saveCustomMoodsToStorage();
                 loadCustomMoods();
                 updateMoodSelects();
             }
@@ -571,6 +574,16 @@
                 option.className = 'custom-mood-option';
                 moodSelect.appendChild(option);
             });
+        }
+
+        function loadCustomMoodsFromStorage() {
+            const stored = JSON.parse(localStorage.getItem('melomood_custom_moods') || '[]');
+            customMoods = stored;
+            updateMoodSelects();
+        }
+
+        function saveCustomMoodsToStorage() {
+            localStorage.setItem('melomood_custom_moods', JSON.stringify(customMoods));
         }
 
         function searchSongs() {
@@ -597,6 +610,7 @@
                 });
         }
         document.addEventListener('DOMContentLoaded', () => {
+            loadCustomMoodsFromStorage();
             loadMoods();
             
             document.getElementById('search').addEventListener('keypress', (e) => {
