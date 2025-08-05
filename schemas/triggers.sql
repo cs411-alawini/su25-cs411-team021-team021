@@ -1,18 +1,16 @@
 ALTER TABLE MoodLog
   MODIFY mood_label VARCHAR(30) NOT NULL;
- 
+
 CREATE TABLE IF NOT EXISTS Mood (
   mood_label VARCHAR(30) PRIMARY KEY
 );
- 
+
 INSERT IGNORE INTO Mood (mood_label)
 SELECT DISTINCT mood_label FROM MoodLog;
- 
-DELIMITER $$
+
 CREATE TRIGGER trg_moodlog_before_ins
 BEFORE INSERT ON MoodLog
 FOR EACH ROW
 BEGIN
   INSERT IGNORE INTO Mood (mood_label) VALUES (NEW.mood_label);
-END$$
-DELIMITER ;
+END;
