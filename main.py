@@ -67,7 +67,30 @@ def generate_playlist(mood):
     cursor.close()
     db.close()
     return jsonify(result)
+    
+@app.route("/playlist/mix", methods=["POST"])
+def make_mixed_playlist():
+    data = request.get_json()
+    pct = data["percents"]
+    args = [
+        data["user_id"],
+        data["name"],
+        data["total"],
+        pct.get("Happy", 0),
+        pct.get("Sad", 0),
+        pct.get("Calm", 0),
+        pct.get("Energetic", 0),
+        pct.get("Angry", 0),
+    ]
+    with closing(get_db()) as conn, conn.cursor() as cur:
+        cur.callproc("create_mood_playlist", args)
+        new_id = None
+        for rs in cur.stored_results():
+            new_id = rs.fetchone()[0]
+        conn.commit()
+    return jsonify({"playlist_id": new_id}), 201
 
+ 
 
 @app.route("/moods", methods=["POST"])
 def add_mood():
