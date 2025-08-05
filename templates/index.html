@@ -201,6 +201,20 @@
             .mood-log-item { flex-direction: column; gap: 10px; align-items: stretch; }
             h1 { font-size: 2rem; }
         }
+        .custom-mood-item { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 6px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-left: 4px solid #607d8b;
+        }
+        .custom-mood-btn {
+            background: #607d8b;
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
@@ -212,6 +226,7 @@
             <button class="tab-button active" onclick="showTab('playlist')">Generate Playlist</button>
             <button class="tab-button" onclick="showTab('mood-logs')">Mood Logs</button>
             <button class="tab-button" onclick="showTab('search')">Search Songs</button>
+            <button class="tab-button" onclick="showTab('custom-moods')">Custom Moods</button>
         </div>
 
         <div id="playlist-tab" class="tab-content active">
@@ -268,10 +283,24 @@
             <button onclick="searchSongs()">Search</button>
             <div id="search-results"></div>
         </div>
+        <div id="custom-moods-tab" class="tab-content">
+            <h2>Create Custom Moods</h2>
+            <input type="text" id="new-mood-name" placeholder="Enter mood name (e.g., Nostalgic, Excited)">
+            <input type="text" id="new-mood-description" placeholder="Description (optional)">
+            <button onclick="createCustomMood()">Create Mood</button>
+            <div id="custom-mood-result"></div>
+
+            <div style="margin-top: 40px;">
+                <h2>Your Custom Moods</h2>
+                <button onclick="loadCustomMoods()">Refresh Custom Moods</button>
+                <div id="custom-moods-list"></div>
+            </div>
+        </div>
     </div>
 
     <script>
         const API = "https://su25-cs411-team021-team021-11849892885.us-central1.run.app";
+        let customMoods = [];
 
         function showTab(tab) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -382,6 +411,94 @@
                     document.getElementById('moods').innerHTML = '<div class="error">Error loading mood logs</div>';
                 });
         }
+        function createCustomMood() {
+            const name = document.getElementById('new-mood-name').value.trim();
+            const description = document.getElementById('new-mood-description').value.trim();
+            if (!name) {
+                document.getElementById('custom-mood-result').innerHTML = '<div class="error">Please enter a mood name</div>';
+                return;
+            }
+            if (customMoods.some(mood => mood.name.toLowerCase() === name.toLowerCase())) {
+                document.getElementById('custom-mood-result').innerHTML = '<div class="error">This mood already exists</div>';
+                return;
+            }
+            const newMood = {
+                id: Date.now(),
+                name: name,
+                description: description || '',
+                created_at: new Date().toLocaleString()
+            };
+            
+            customMoods.push(newMood);
+            
+            document.getElementById('custom-mood-result').innerHTML = '<div class="success">Custom mood created successfully!</div>';
+            document.getElementById('new-mood-name').value = '';
+            document.getElementById('new-mood-description').value = '';
+            
+            loadCustomMoods();
+            updateMoodSelects();
+            updateMoodButtons();
+        }
+
+        function loadCustomMoods() {
+            const container = document.getElementById('custom-moods-list');
+            
+            if (customMoods.length === 0) {
+                container.innerHTML = '<p>No custom moods created yet</p>';
+                return;
+            }
+            
+            container.innerHTML = customMoods.map(mood =>
+                `<div class="custom-mood-item">
+                    <div>
+                        <strong>${mood.name}</strong>
+                        ${mood.description ? `<br><small>${mood.description}</small>` : ''}
+                        <br><small>Created: ${mood.created_at}</small>
+                    </div>
+                    <button class="btn-danger" onclick="deleteCustomMood(${mood.id})">Delete</button>
+                </div>`
+            ).join('');
+        }
+
+        function deleteCustomMood(id) {
+            if (confirm('Are you sure you want to delete this custom mood?')) {
+                customMoods = customMoods.filter(mood => mood.id !== id);
+                loadCustomMoods();
+                updateMoodSelects();
+                updateMoodButtons();
+            }
+        }
+
+        function updateMoodSelects() {
+            const moodSelect = document.getElementById('mood');
+            
+            const existingCustomOptions = moodSelect.querySelectorAll('.custom-mood-option');
+            existingCustomOptions.forEach(option => option.remove());
+            
+            customMoods.forEach(mood => {
+                const option = document.createElement('option');
+                option.value = mood.name;
+                option.textContent = mood.name;
+                option.className = 'custom-mood-option';
+                moodSelect.appendChild(option);
+            });
+        }
+
+        function updateMoodButtons() {
+            const moodButtonsContainer = document.querySelector('.mood-buttons');
+            
+            const existingCustomButtons = moodButtonsContainer.querySelectorAll('.custom-mood-btn');
+            existingCustomButtons.forEach(btn => btn.remove());
+            
+            customMoods.forEach(mood => {
+                const button = document.createElement('button');
+                button.className = 'mood-btn custom-mood-btn';
+                button.textContent = mood.name;
+                button.onclick = () => generatePlaylist(mood.name);
+                moodButtonsContainer.appendChild(button);
+            });
+        }
+        
         function deleteMood(id) {
             if (confirm('Are you sure you want to delete this mood log?')) {
                 fetch(`${API}/moods/${id}`, {method: 'DELETE'})
@@ -394,6 +511,7 @@
                 });
             }
         }
+        
         function searchSongs() {
             const query = document.getElementById('search').value.trim();
             if (!query) {
@@ -425,6 +543,9 @@
             
             document.getElementById('custom-mood').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') generateCustomPlaylist();
+            });
+            document.getElementById('new-mood-name').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') createCustomMood();
             });
         });
     </script>
