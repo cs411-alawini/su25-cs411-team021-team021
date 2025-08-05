@@ -139,7 +139,25 @@ def delete_mood(log_id):
     cursor.close()
     db.close()
     return jsonify({"message": "Deleted"})
+@app.route("/mood-labels", methods=["GET"])
 
+def get_mood_labels():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT mood_label FROM Mood ORDER BY mood_label")
+    labels = [r[0] for r in cursor.fetchall()]
+    cursor.close()
+    db.close()
+    return jsonify(labels)
+
+
+@app.route("/mood-labels", methods=["POST"])
+def add_mood_label():
+    label = request.get_json()["mood_label"].strip()
+    with closing(get_db()) as db, db.cursor() as cursor:
+        cursor.execute("INSERT IGNORE INTO Mood (mood_label) VALUES (%s)", (label,))
+        db.commit()
+    return jsonify({"ok": True})
 
 @app.route("/users", methods=["GET"])
 def get_users():
