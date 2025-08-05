@@ -203,50 +203,6 @@ def search():
     db.close()
     return jsonify(result)
 
-
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    username = data["username"].strip()
-    password = data["password"].encode("utf-8")
-    pw_hash = hashlib.sha256(password).hexdigest()
-
-    try:
-        with closing(get_db()) as db, db.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO User (username, password_hash) VALUES (%s, %s)",
-                (username, pw_hash),
-            )
-            db.commit()
-        return jsonify({"ok": True, "message": "Registered!"}), 201
-    except mysql.connector.errors.IntegrityError:
-        return jsonify({"ok": False, "message": "Username already exists"}), 409
-
-
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
-    username = data["username"].strip()
-    password = data["password"].encode("utf-8")
-    pw_hash = hashlib.sha256(password).hexdigest()
-
-    with closing(get_db()) as db, db.cursor(dictionary=True) as cursor:
-        cursor.execute(
-            "SELECT user_id FROM User WHERE username = %s AND password_hash = %s",
-            (username, pw_hash),
-        )
-        row = cursor.fetchone()
-    if row:
-        return (
-            jsonify(
-                {"ok": True, "user_id": row["user_id"], "message": "Login success"}
-            ),
-            200,
-        )
-    else:
-        return jsonify({"ok": False, "message": "Invalid credentials"}), 401
-
-
 if __name__ == "__main__":
     logger.warning("Starting MeloMood...")
     app.run(debug=True, host="0.0.0.0", port=8000)
