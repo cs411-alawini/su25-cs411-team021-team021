@@ -8,8 +8,14 @@ However, as we iterated on feature scope and schema design, we shifted our empha
 ## Usefulness
 
 ### Achieved
+- **Core Functionality:** Successfully implemented mood logging, playlist mapping, and song search features.
+- **Data Analysis:** Added features for top song recommendations based on target moods.
+- **User Experience:** Provided responsive web UI and quick operations to implemented features.
 
 ### Failed
+- **Recommendation Engine:** Did not introduce a more sophisticated learning-based collaborative filtering system for song suggestions.
+- **Advanced Play History:** Analysis of user listening patterns was not implemented.
+- **Community:** We did not implement community sharing feature, as this requires a functional user authentication support.
 
 ## Schema changes
 
