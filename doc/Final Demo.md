@@ -18,6 +18,11 @@ However, as we iterated on feature scope and schema design, we shifted our empha
 - **Community:** We did not implement community sharing feature, as this requires a functional user authentication support.
 
 ## Schema changes
+- **Relationships:** We moved from an initial ERD with more direct links (e.g., Playlist:MoodLog 1:1) to a more normalized schema where MoodLog is independent and playlists reference user (not always a mood event).
+- **`User`:** Dropped ProfileSettings, simplified for authentication and join date only.
+- **`MoodLog`:** Changed to allow each mood log to reference a user and a song (not always a playlist). Introduced a rating field for more granular feedback.
+- **`Song`:** Added Spotify IDs, normalized metadata, and support for scalable ingestion.
+- **`Tags`/`CommunityPost`:** Tag and CommunityPost tables are specified in the ERD but were not prioritized in the final implemented schema.
 
 ## Table implementations change
 
