@@ -46,19 +46,22 @@ Used `AUTO_INCREMENT` for primary keys, added `ON DELETE CASCADE` for referentia
 The database design gives fast retrieval of user, song, and playlist data. This is especially true considering the large scale (over 100k) of our song inventory and user base, which requires efficient cross-referencing.
 Benchmarked query relations and indexes allow for slightly more efficient queries that power analytics features, which reflects on making the web app responsive, consider that we did not cache the database connection in user sessions and requiring a new connection on every operation.
 
-## Technical challenges
+## ## Final division of Labor & Technical challenges
 
-### Kushi
+### Khushi
 - Ensured that mood logs and playlists generated on the frontend properly persisted to the database.
 - Create and coordinate backend to fetch and display mood history and playlists.
+- Technical Challenges: Debugging both backend and frontend given that a lot of errors popped up most of the time
 
 ### Anay
 - Reworked join tables and constraints to meet BCNF/3NF, especially for Playlist–Song–Mood relationships.
 - Debugged the query for user, song, and playlist data insertion.
+- Technical Challenges: Ensuring that the database on GCP processes the queries as it didn't communicate properly
 
 ### Yen-Ting (Andy)
 - Profiled, and benchmarked various indexes on MoodLog and other tables for analytic workloads.
 - Managed GCP Cloud SQL configuration and troubleshooting.
+- Technical Challenges: Troubleshooting GCP and connecting database, backend, and frontend all together. Fixing debugs on database.
 
 ## Future work
 - Utilize and connect existing services, e.g. using Apple Health to provide mood record, and Spotify to support song search and playlist storage.
@@ -67,7 +70,6 @@ Benchmarked query relations and indexes allow for slightly more efficient querie
 - Community Hub feature development
 - Generation System improvements and overall fix fails
 
-## Final division of labor
 
 ## Corrections for early stages
 ### Stage 2
