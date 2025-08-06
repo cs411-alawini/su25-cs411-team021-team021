@@ -25,12 +25,16 @@ However, as we iterated on feature scope and schema design, we shifted our empha
 
 
 ## Functionalities changes
-
 ### Added
-
+- Data analytics endpoints (e.g., top happy tracks, most active users).
+- Perpetual playlist updates upon new mood insertion.
 ### Removed
+- Social playlist sharing (de-scoped due to authentication complexity).
+- Song metadata editing by users (reserved for backend operations-only, out of scope).
 
 ## How database complement the application?
+The database design gives fast retrieval of user, song, and playlist data. This is especially true considering the large scale (over 100k) of our song inventory and user base, which requires efficient cross-referencing.
+Benchmarked query relations and indexes allow for slightly more efficient queries that power analytics features, which reflects on making the web app responsive, consider that we did not cache the database connection in user sessions and requiring a new connection on every operation.
 
 ## Technical challenges
 
@@ -41,6 +45,7 @@ However, as we iterated on feature scope and schema design, we shifted our empha
 ### Yen-Ting (Andy)
 
 ## Future work
+- Utilize and connect existing services, e.g. using Apple Health to provide mood record, and Spotify to support song search and playlist storage.
 
 ## Final division of labor
 
