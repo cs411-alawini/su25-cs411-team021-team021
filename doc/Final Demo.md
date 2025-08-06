@@ -1,6 +1,9 @@
 # Final Demo
 
 ## Changes in the directions of our project
+Over the course of the project, we made several adjustments to our plan, such as modifying the feature set and altering the development timeline, based on technical feasibility.
+Our original goal was to create a music-mood logging and dynamic playlist recommendation web application that continuously updates based on user interactions.
+However, as we iterated on feature scope and schema design, we shifted our emphasis to focus more on mood-centric song recommendations and implemented brief performance optimizations to better meet course requirements and our achievable workload.
 
 ## Usefulness
 
