@@ -50,12 +50,20 @@ Benchmarked query relations and indexes allow for slightly more efficient querie
 ## Final division of labor
 
 ## Corrections for early stages
-
 ### Stage 2
-
 #### Before
+```
+Good progress. A few comments:
+1. User table should have passwords and unique emails.
+2. Screenshots of EXPLAIN ANALYZE for the queries with each index are missing.
+3. Query-wise logical reasoning for each index is missing.
 
+Please reach out to your Project TA if you have any questions/concerns. Thanks!
+
+Aryaman
+```
 #### After
+For stage 2, our initial database design used incorrect connector notations as well as missing cardinality constraints. The feedback suggested to use standard notations, correct relationship cardinalities, standardize data types to varchar only, and add proper functional dependencies for normalization. We addressed these issues by implementing crow's foot notation, correcting all cardinalities, using varchar data types, and implemented proper functional dependencies.
 
 ### Stage 3
 
