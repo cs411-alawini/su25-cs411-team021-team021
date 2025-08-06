@@ -62,6 +62,9 @@ Benchmarked query relations and indexes allow for slightly more efficient querie
 
 ## Future work
 - Utilize and connect existing services, e.g. using Apple Health to provide mood record, and Spotify to support song search and playlist storage.
+- Add login system for users and improve interface
+- Better mood tracking features and song tracking as well as shuffling
+- Community Hub feature development 
 
 ## Final division of labor
 
