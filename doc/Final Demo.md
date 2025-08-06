@@ -16,6 +16,7 @@ However, as we iterated on feature scope and schema design, we shifted our empha
 - **Recommendation Engine:** Did not introduce a more sophisticated learning-based collaborative filtering system for song suggestions.
 - **Advanced Play History:** Analysis of user listening patterns was not implemented.
 - **Community:** We did not implement community sharing feature, as this requires a functional user authentication support.
+- **User Login System:** Could not implement a proper log in system due to bugs. A bit more time would allow us to implement this properly, so in the future we plan to do so.
 
 ## Schema changes
 - **Relationships:** We moved from an initial ERD with more direct links (e.g., Playlist:MoodLog 1:1) to a more normalized schema where MoodLog is independent and playlists reference user (not always a mood event).
