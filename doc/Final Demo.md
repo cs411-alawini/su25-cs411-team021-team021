@@ -48,10 +48,16 @@ Benchmarked query relations and indexes allow for slightly more efficient querie
 ## Technical challenges
 
 ### Kushi
+- Ensured that mood logs and playlists generated on the frontend properly persisted to the database.
+- Create and coordinate backend to fetch and display mood history and playlists.
 
 ### Anay
+- Reworked join tables and constraints to meet BCNF/3NF, especially for Playlist–Song–Mood relationships.
+- Debugged the query for user, song, and playlist data insertion.
 
 ### Yen-Ting (Andy)
+- Profiled, and benchmarked various indexes on MoodLog and other tables for analytic workloads.
+- Managed GCP Cloud SQL configuration and troubleshooting.
 
 ## Future work
 - Utilize and connect existing services, e.g. using Apple Health to provide mood record, and Spotify to support song search and playlist storage.
@@ -75,7 +81,4 @@ Aryaman
 For stage 2, our initial database design used incorrect connector notations as well as missing cardinality constraints. The feedback suggested to use standard notations, correct relationship cardinalities, standardize data types to varchar only, and add proper functional dependencies for normalization. We addressed these issues by implementing crow's foot notation, correcting all cardinalities, using varchar data types, and implemented proper functional dependencies.
 
 ### Stage 3
-
-#### Before
-
-#### After
+N/A
