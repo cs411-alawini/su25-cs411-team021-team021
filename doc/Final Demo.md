@@ -25,9 +25,13 @@ However, as we iterated on feature scope and schema design, we shifted our empha
 - **`Tags`/`CommunityPost`:** Tag and CommunityPost tables are specified in the ERD but were not prioritized in the final implemented schema.
 
 ## Table implementations change
-
-### Differences and rationale
-
+### Added
+- `rating` to `MoodLog` for capturing mood-song match strength.
+- Timestamps (`created_at`, `added_at`) for auditability.
+### Indexes
+Added covering/composite indexes for analytic query acceleration on `MoodLog`.
+### DDL
+Used `AUTO_INCREMENT` for primary keys, added `ON DELETE CASCADE` for referential integrity.
 
 ## Functionalities changes
 ### Added
